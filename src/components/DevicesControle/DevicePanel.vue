@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useDialogManagerStore } from "@/stores/dialogManager";
+import { storeToRefs } from "pinia";
+const dialogManager = useDialogManagerStore();
+
+const { handleOpenDialog } = dialogManager;
 interface DevicesList {
   name: string;
   img: string;
@@ -9,6 +14,28 @@ interface Props {
   devicesList: DevicesList[];
 }
 const props = withDefaults(defineProps<Props>(), {});
+// 关闭所有设备回调
+const closeAllDevicesCallback = () => {
+  console.log("closeAllDevicesCallback");
+};
+const closeAllDevices = (device: DevicesList) => {
+  // 打开提示窗口
+  handleOpenDialog(
+    `本次操作将<div class='primary-text'>关闭</div>所有<div class='primary-text'>${device.name}</div>设备`,
+    closeAllDevicesCallback
+  );
+};
+// 关闭所有设备回调
+const openAllDevicesCallback = () => {
+  console.log("openAllDevicesCallback");
+};
+const openAllDevices = (device: DevicesList) => {
+  // 打开提示窗口
+  handleOpenDialog(
+    `本次操作将<div class='primary-text'>开启</div>所有<div class='primary-text'>${device.name}</div>设备`,
+    openAllDevicesCallback
+  );
+};
 </script>
 <template>
   <div class="device-panel-container">
@@ -27,8 +54,12 @@ const props = withDefaults(defineProps<Props>(), {});
         </div>
       </div>
       <div class="device-btn">
-        <div class="common-btn close-btn">全关</div>
-        <div class="common-btn open-btn">全开</div>
+        <div class="common-btn close-btn" @click="closeAllDevices(device)">
+          全关
+        </div>
+        <div class="common-btn open-btn" @click="openAllDevices(device)">
+          全开
+        </div>
       </div>
     </div>
   </div>
@@ -141,10 +172,10 @@ const props = withDefaults(defineProps<Props>(), {});
         border-radius: 4px;
       }
       .close-btn {
-        background-color: #8596a4;
+        background-color: $theme-gray;
       }
       .open-btn {
-        background-color: #232d42;
+        background-color: $theme-deep-blue;
       }
     }
   }
