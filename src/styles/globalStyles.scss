@@ -1,0 +1,23 @@
+$theme-bg: #000106;
+$theme-color: #fff;
+$theme-primary: #4dc591;
+$theme-card: #1b273c;
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
