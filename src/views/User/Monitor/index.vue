@@ -1,6 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import MonitorGallery from "@/components/Monitor/MonitorGallery.vue";
+import { NCarousel } from "naive-ui";
+import { ref } from "vue";
+</script>
 <template>
-  <div>视频监控</div>
+  <MonitorGallery />
 </template>
 <style lang="scss" scoped>
 @import "@/styles/globalStyles.scss";

@@ -75,11 +75,11 @@ const { handleCloseDialog } = dialogManager;
   justify-content: start;
 }
 .layout-header {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 .layout-main {
   width: 100vw;
-  height: 74vh;
+  height: 75vh;
   overflow: hidden;
 }
 </style>

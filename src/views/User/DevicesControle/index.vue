@@ -37,12 +37,13 @@ const devicesList = ref([
   <n-carousel class="carousel-container" draggable :slides-per-view="1">
     <DevicePanel :devicesList="devicesList" />
     <DevicePanel :devicesList="devicesList" />
+    <DevicePanel :devicesList="devicesList" />
   </n-carousel>
 </template>
 <style lang="scss" scoped>
 @import "@/styles/globalStyles.scss";
 .carousel-container {
   width: 100vw;
-  height: 74vh;
+  height: 75vh;
 }
 </style>

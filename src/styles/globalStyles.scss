@@ -30,3 +30,11 @@ $theme-deep-blue: #232d42;
   color: $theme-primary;
   padding: 0 5px;
 }
+::v-deep(.n-carousel__dot) {
+  border-radius: 20px !important;
+  transition: all 0.2s ease !important;
+  margin-left: 8px !important;
+}
+::v-deep(.n-carousel__dot--active) {
+  width: 30px !important;
+}
