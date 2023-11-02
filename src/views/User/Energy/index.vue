@@ -3,15 +3,13 @@
     <div class="energy-container">
       <EnergyCard :energyList="energyList1">
         <div>
-          碳排
-          <span
+          碳排<span
             :style="{
               color: '#4DC591',
               textShadow: 'none',
               marginLeft: '16px',
             }"
-          >
-            +3023 kg</span
+            >+ 3023 kg</span
           >
         </div>
       </EnergyCard>
@@ -19,15 +17,15 @@
       <EnergyCard :energyList="energyList3"></EnergyCard>
     </div>
     <div class="energy-lineChart">
-      <EnergyLine :source="source"></EnergyLine>
-      <EnergyLine :source="source"></EnergyLine>
-      <EnergyLine :source="source"></EnergyLine>
+      <EnergyLine :source="source" unit="kgce"></EnergyLine>
+      <EnergyLine :source="source" unit="kw/h"></EnergyLine>
+      <EnergyLine :source="source" unit="km³"></EnergyLine>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import EnergyCard from "./EnergyCard.vue";
 import EnergyLine from "./EnergyLine.vue";
 const energyList1 = ref({
@@ -56,25 +54,30 @@ const energyList3 = ref({
   YOY: +0.035,
   QOQ: +0.014,
 });
-const source = [
-  [
-    "product",
-    "1月",
-    "2月",
-    "3月",
-    "4月",
-    "5月",
-    "6月",
-    "7月",
-    "8月",
-    "9月",
-    "10月",
-    "11月",
-    "12月",
-  ],
-  ["本期", 1.8, 1.3, 2, 3.2, 3.3, 2.7, 3.5, 4.5, 3.6, 3.3, 4, 3.2],
-  ["同期", 3.5, 2.1, 1.9, 2, 2.3, 2, 1.5, 3.5, 3, 2.3, 2.8, 3.7],
-];
+const source = ref<(number | string)[][]>([]);
+onMounted(() => {
+  setTimeout(() => {
+    source.value = [
+      [
+        "product",
+        "1月",
+        "2月",
+        "3月",
+        "4月",
+        "5月",
+        "6月",
+        "7月",
+        "8月",
+        "9月",
+        "10月",
+        "11月",
+        "12月",
+      ],
+      ["南楼", 3.5, 2.1, 1.9, 2, 2.3, 2, 1.5, 3.5, 3, 2.3, 2.8, 3.7],
+      ["北楼", 1.8, 1.3, 2, 3.2, 3.3, 2.7, 3.5, 4.5, 3.6, 3.3, 4, 3.2],
+    ];
+  }, 500);
+});
 </script>
 <style lang="scss" scoped>
 @import "@/styles/globalStyles.scss";
