@@ -6,6 +6,7 @@
       yAxisName="数值"
       :series="series"
       :color="colors"
+      :unit="unit"
     ></LineChart>
     <div class="button">
       <div
@@ -30,6 +31,7 @@ import { lineDefaultSeries } from "@/components/echart/index";
 import { LineSeriesOption } from "echarts/charts";
 interface Props {
   source: (string | number)[][];
+  unit?: string;
 }
 const props = withDefaults(defineProps<Props>(), {});
 
