@@ -30,6 +30,10 @@ $theme-deep-blue: #232d42;
   color: $theme-primary;
   padding: 0 5px;
 }
+.carousel-container {
+  width: 100vw;
+  height: 75vh;
+}
 ::v-deep(.n-carousel__dot) {
   border-radius: 20px !important;
   transition: all 0.2s ease !important;

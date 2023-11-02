@@ -1,15 +1,14 @@
 <template>
   <section class="monitor-gallery">
-    <template v-if="monitorList.length">
-      <div class="monitor-grid-container" :class="`grid-${gridCount}`">
-        <img
-          class="monitor"
-          v-for="monitor in monitorList"
-          src="/images/Monitor/monitor-test.png"
-          alt=""
-        />
-      </div>
-      <!-- <draggable
+    <div class="monitor-grid-container" :class="`grid-${gridCount}`">
+      <img
+        class="monitor"
+        v-for="monitor in monitorList"
+        src="/images/Monitor/monitor-test.png"
+        alt=""
+      />
+    </div>
+    <!-- <draggable
         :class="`grid-${gridCount}`"
         :disabled="gridCount === 1"
         v-model="monitorList"
@@ -18,14 +17,13 @@
       >
         <template #item="{ element: item, index }"> 123123 </template>
       </draggable> -->
-      <!-- <Monitor
+    <!-- <Monitor
         :controls="gridCount === 1"
         :src="''"
         :index-code="'123'"
         :name="'test'"
         @dblclick="pickMonitor(1)"
       ></Monitor> -->
-    </template>
     <!-- <template v-else>
       <Monitor src="" index-code="" name=""></Monitor>
     </template> -->
@@ -54,6 +52,7 @@
 
 <script setup lang="ts">
 import Monitor from "./Monitor.vue";
+import DevicePanel from "@/components/DevicesControle/DevicePanel.vue";
 // import MonitorSlider from "./MonitorSlider.vue";
 // import {
 //   getDefaultMonitorList,
@@ -68,24 +67,25 @@ import draggable from "vuedraggable";
 import { isEmptyObject } from "@/utils/other";
 
 const gridOptions = [{ num: 1 }, { num: 6 }];
-const gridCount = ref(1);
+const gridCount = ref(6);
 const sourceList = ref<MonitorItem[]>([]);
 const monitorList = computed({
   get() {
-    const total = sourceList.value.length;
-    const count = gridCount.value;
-    const gap = count - total < 0 ? 0 : count - total;
+    // const total = sourceList.value.length;
+    // const count = gridCount.value;
+    // const gap = count - total < 0 ? 0 : count - total;
 
-    console.log(1111111);
-    console.log(
-      sourceList.value.slice(0, count).concat(new Array(gap).fill({}))
-    );
+    // console.log(1111111);
+    // console.log(
+    //   sourceList.value.slice(0, count).concat(new Array(gap).fill({}))
+    // );
 
-    return sourceList.value.slice(0, count).concat(new Array(gap).fill({}));
+    // return sourceList.value.slice(0, count).concat(new Array(gap).fill({}));
+    return gridCount.value;
   },
   set(newList) {
-    const l = newList.filter((item) => !isEmptyObject(item));
-    sourceList.value.splice(0, l.length, ...l);
+    // const l = newList.filter((item) => !isEmptyObject(item));
+    // sourceList.value.splice(0, l.length, ...l);
   },
 });
 watch(monitorList, (val) => {
@@ -236,6 +236,7 @@ async function addMonitor(indexCode: string) {
     opacity: 0.4;
     transition: all 0.15s ease;
     margin-right: 12px;
+    cursor: pointer;
   }
   .switch-btn-active {
     opacity: 1;

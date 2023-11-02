@@ -34,16 +34,12 @@ const devicesList = ref([
 ]);
 </script>
 <template>
-  <n-carousel class="carousel-container" draggable :slides-per-view="1">
+  <NCarousel class="carousel-container" draggable :slides-per-view="1">
     <DevicePanel :devicesList="devicesList" />
     <DevicePanel :devicesList="devicesList" />
     <DevicePanel :devicesList="devicesList" />
-  </n-carousel>
+  </NCarousel>
 </template>
 <style lang="scss" scoped>
 @import "@/styles/globalStyles.scss";
-.carousel-container {
-  width: 100vw;
-  height: 75vh;
-}
 </style>
