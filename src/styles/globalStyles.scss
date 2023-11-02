@@ -42,3 +42,10 @@ $theme-deep-blue: #232d42;
 ::v-deep(.n-carousel__dot--active) {
   width: 30px !important;
 }
+.v-vl-items {
+  background-color: $theme-card;
+}
+.n-base-select-option {
+  background-color: $theme-card;
+  text-align: center;
+}

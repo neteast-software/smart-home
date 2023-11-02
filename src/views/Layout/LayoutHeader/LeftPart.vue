@@ -3,6 +3,8 @@ import { NSelect } from "naive-ui";
 import { ref } from "vue";
 import { useNow } from "@vueuse/core";
 import { format } from "date-fns";
+import AreaOptionsPanel from "@/components/Layout/AreaOptionsPanel.vue";
+const areaOptionsPanelRef = ref<InstanceType<typeof AreaOptionsPanel>>();
 const now = useNow();
 const areaId = ref(0);
 const areaOptions = [
@@ -30,8 +32,11 @@ const toggleFullScreen = () => {
         class="NSelect"
         v-model:value="areaId"
         size="large"
+        disabled
+        @click="areaOptionsPanelRef!.toggleOptionsPanel()"
         :options="areaOptions"
       />
+      <AreaOptionsPanel ref="areaOptionsPanelRef" />
     </div>
     <div class="current-time-container">
       <!-- <img src="/images/Layout/time.svg" alt="time" /> -->
@@ -40,11 +45,13 @@ const toggleFullScreen = () => {
     </div>
   </div>
 </template>
+
 <style lang="scss" scoped>
 @import "@/styles/globalStyles.scss";
 .left-container {
   display: flex;
   flex-grow: 1;
+  z-index: 2;
   .NSelect-Container {
     position: relative;
     margin-left: 30px;
