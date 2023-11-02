@@ -26,6 +26,7 @@ body {
   // 取消ios 点击出现高亮色块
   -webkit-tap-highlight-color: transparent !important;
   // 所有图片不拉伸，遵循宽高比
+  box-sizing: border-box;
   img {
     object-fit: contain;
   }
