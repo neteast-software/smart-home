@@ -9,7 +9,7 @@ import chart from "./index.vue";
 import type { ECOption } from "./index.vue";
 import { LineSeriesOption } from "echarts/charts";
 import { BaseChartProps, lineDefaultSeries } from "./index";
-import { computed } from "vue";
+import { computed, reactive } from "vue";
 import {
   LegendComponentOption,
   TooltipComponentOption,
@@ -19,7 +19,9 @@ import {
 interface Props extends BaseChartProps {
   color?: string[] | string;
   series?: LineSeriesOption | LineSeriesOption[];
+  unit?: string;
 }
+
 const props = withDefaults(defineProps<Props>(), {});
 const defaultXAxis: XAXisComponentOption = {
   type: "category",
@@ -34,30 +36,34 @@ const defaultXAxis: XAXisComponentOption = {
   },
   nameTextStyle: {
     fontSize: 8,
-    padding: [0, 0, -20, -25],
+    padding: [0, 0, -20, -15],
     verticalAlign: "bottom",
-    color: "#838EB6",
+    color: "#8A92A6",
   },
 };
-const defaultYAxis: YAXisComponentOption = {
+const defaultYAxis = reactive<YAXisComponentOption>({
   type: "value",
   axisLabel: {
     fontSize: 12,
     align: "center",
-    // padding: [0, 30, 0, 0],
+    formatter: (value: number) => {
+      if (value === 0 || !props.unit) {
+        return value.toString();
+      }
+      return `${value}${props.unit}`;
+    },
   },
   nameTextStyle: {
     fontSize: 8,
-    padding: [0, 20, 0, 0],
-    color: "#838EB6",
+    padding: [0, 10, 0, 0],
+    color: "#8A92A6",
   },
   splitLine: {
     lineStyle: {
-      color: ["rgba(85, 110, 153, 0.08)"],
-      width: 0.5,
+      width: 0,
     },
   },
-};
+});
 const defaultLegend: LegendComponentOption = {
   icon: "rect",
   top: 0,
@@ -75,6 +81,10 @@ const defaultTooltip = computed<TooltipComponentOption>(() => {
   return {
     show: true,
     trigger: "axis",
+    position: function (point, params, dom, rect, size) {
+      // 固定在顶部
+      return [point[0], "10%"];
+    },
   };
 });
 
