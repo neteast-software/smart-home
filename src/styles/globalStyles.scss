@@ -1,0 +1,51 @@
+$theme-bg: #000106;
+$theme-color: #fff;
+$theme-primary: #4dc591;
+$theme-card: #1b273c;
+$theme-warning: #ff7648;
+$theme-danger: #ff3b30;
+$theme-gray: #8596a4;
+$theme-deep-blue: #232d42;
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.primary-text {
+  color: $theme-primary;
+  padding: 0 5px;
+}
+.carousel-container {
+  width: 100vw;
+  height: 75vh;
+}
+::v-deep(.n-carousel__dot) {
+  border-radius: 20px !important;
+  transition: all 0.2s ease !important;
+  margin-left: 8px !important;
+}
+::v-deep(.n-carousel__dot--active) {
+  width: 30px !important;
+}
+.v-vl-items {
+  background-color: $theme-card;
+}
+.n-base-select-option {
+  background-color: $theme-card;
+  text-align: center;
+}

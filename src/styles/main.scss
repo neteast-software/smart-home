@@ -1,0 +1,28 @@
+@import "./base.scss";
+@import "./globalStyles.scss";
+.absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.not-allowed {
+    cursor: not-allowed !important;
+    opacity: 0.2 !important;
+}
+
+@mixin flex-center {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.flex-center {
+    @include flex-center;
+}
+
+.relative {
+    position: relative;
+}

@@ -1,0 +1,7 @@
+{
+    "name": "楼宇智控(楼层版)",
+    "integrations": {
+        "capacitor": {}
+    },
+    "type": "vue-vite"
+}
