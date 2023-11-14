@@ -26,6 +26,11 @@ import "./theme/variables.css";
 
 import "./styles/main.scss";
 
+import { StatusBar, Animation } from "@capacitor/status-bar";
+import { NavigationBar } from "@hugotomazi/capacitor-navigation-bar";
+StatusBar?.hide({ animation: Animation.None });
+NavigationBar?.hide();
+
 const app = createApp(App).use(IonicVue).use(router).use(createPinia());
 
 router.isReady().then(() => {

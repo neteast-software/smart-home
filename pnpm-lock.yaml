@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@capacitor/android':
+    specifier: 5.5.1
+    version: 5.5.1(@capacitor/core@5.5.1)
   '@capacitor/app':
     specifier: 5.0.6
     version: 5.0.6(@capacitor/core@5.5.1)
@@ -20,6 +23,9 @@ dependencies:
   '@capacitor/status-bar':
     specifier: 5.0.6
     version: 5.0.6(@capacitor/core@5.5.1)
+  '@hugotomazi/capacitor-navigation-bar':
+    specifier: ^2.0.1
+    version: 2.0.1(@capacitor/core@5.5.1)
   '@ionic/vue':
     specifier: ^7.0.0
     version: 7.5.4
@@ -1265,6 +1271,14 @@ packages:
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
 
+  /@capacitor/android@5.5.1(@capacitor/core@5.5.1):
+    resolution: {integrity: sha512-WTnPnpaEvTtaEtTNRbh06Y1afF7A4plY/4uajAL0WW8tdR1FxieadF357yKGiAT6CudI/B+eOu6rxn6qWuphKg==}
+    peerDependencies:
+      '@capacitor/core': ^5.5.0
+    dependencies:
+      '@capacitor/core': 5.5.1
+    dev: false
+
   /@capacitor/app@5.0.6(@capacitor/core@5.5.1):
     resolution: {integrity: sha512-6ZXVdnNmaYILasC/RjQw+yfTmq2ZO7Q3v5lFcDVfq3PFGnybyYQh+RstBrYri+376OmXOXxBD7E6UxBhrMzXGA==}
     peerDependencies:
@@ -1623,6 +1637,14 @@ packages:
     resolution: {integrity: sha512-Kn7K8dx/5U6+cT1yEhpX1w4PCSg0M+XyRILPgvwcEBjerFWCwQj5sbr3/VmxqV0JGHCBCzyd6LxypEuehypY1w==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
+
+  /@hugotomazi/capacitor-navigation-bar@2.0.1(@capacitor/core@5.5.1):
+    resolution: {integrity: sha512-Gq6vmAyOZLLHie/8wgGEs/V/aItJMXgivAcNItUDEfTpfXVAVbUdb0juOsXEqYgRCysksAmgHAEOg1WXE+L//Q==}
+    peerDependencies:
+      '@capacitor/core': ^4.0.1
+    dependencies:
+      '@capacitor/core': 5.5.1
+    dev: false
 
   /@humanwhocodes/config-array@0.11.13:
     resolution: {integrity: sha512-JSBDMiDKSzQVngfRjOdFXgFfklaXI4K9nLF49Auh21lmBWRLIK3+xTErTWD4KU54pb6coM6ESE7Awz/FNU3zgQ==}
