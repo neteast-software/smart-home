@@ -2,46 +2,46 @@
 //隐藏所有滚动条
 // 针对webkit内核浏览器 -> google
 ::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+    width: 0;
+    height: 0;
 }
 
 body {
-  margin: 0 !important;
-  padding: 0 !important;
-  background-color: $theme-bg;
-  background-image: url("/public/images/bg.png");
-  background-size: cover;
-  color: $theme-color;
-  font-size: 18px;
-  //   font-weight: 100;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: $theme-bg;
+    background-image: url("@images/bg.png");
+    background-size: cover;
+    color: $theme-color;
+    font-size: 18px;
+    //   font-weight: 100;
 }
 * {
-  user-select: none;
-  white-space: nowrap;
-  // 兼容火狐 取消火狐滚动条
-  scrollbar-width: none;
-  // cursor: none !important;
-  // 只允许移动端浏览器进行上下滑动操作
-  // touch-action: pan-y;
-  // 取消ios 点击出现高亮色块
-  -webkit-tap-highlight-color: transparent !important;
-  // 所有图片不拉伸，遵循宽高比
-  box-sizing: border-box;
-  img {
-    object-fit: contain;
-  }
+    user-select: none;
+    white-space: nowrap;
+    // 兼容火狐 取消火狐滚动条
+    scrollbar-width: none;
+    // cursor: none !important;
+    // 只允许移动端浏览器进行上下滑动操作
+    // touch-action: pan-y;
+    // 取消ios 点击出现高亮色块
+    -webkit-tap-highlight-color: transparent !important;
+    // 所有图片不拉伸，遵循宽高比
+    box-sizing: border-box;
+    img {
+        object-fit: contain;
+    }
 }
 
 // 屏蔽uc插入的广告
 iframe[id^="head__"] {
-  display: none !important;
+    display: none !important;
 }
 
 iframe[id^="utp__"] {
-  display: none !important;
+    display: none !important;
 }
 
 iframe[src*="ucweb.com"] {
-  display: none !important;
+    display: none !important;
 }

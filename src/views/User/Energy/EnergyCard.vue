@@ -14,8 +14,8 @@
                             YOY > 0 ? `+ ${YOY} %` : `- ${Math.abs(YOY)} %`
                         }}</span
                     >
-                    <img v-if="YOY < 0" src="/images/Energy/negative.svg" />
-                    <img v-else src="/images/Energy/positive.svg" />
+                    <img v-if="YOY < 0" src="@images/Energy/negative.svg" />
+                    <img v-else src="@images/Energy/positive.svg" />
                 </div>
                 <div>
                     环比<span
@@ -24,8 +24,8 @@
                             QOQ > 0 ? `+ ${QOQ} %` : `- ${Math.abs(QOQ)} %`
                         }}</span
                     >
-                    <img v-if="QOQ < 0" src="/images/Energy/negative.svg" />
-                    <img v-else src="/images/Energy/positive.svg" />
+                    <img v-if="QOQ < 0" src="@images/Energy/negative.svg" />
+                    <img v-else src="@images/Energy/positive.svg" />
                 </div>
                 <slot></slot>
             </div>

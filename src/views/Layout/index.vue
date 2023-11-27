@@ -6,10 +6,34 @@ import ConfirmDialog from "@/components/Dialog/ConfirmDialog.vue";
 import { useDialogManagerStore } from "@/stores/dialogManager";
 import { storeToRefs } from "pinia";
 import { NConfigProvider, darkTheme } from "naive-ui";
+import { IonPage, IonRouterOutlet, createGesture } from "@ionic/vue";
+import { onMounted, ref } from "vue";
 const dialogManager = useDialogManagerStore();
 const { dialogContainerRef, showDialog } = storeToRefs(dialogManager);
 const { handleCloseDialog } = dialogManager;
-import { IonPage, IonRouterOutlet } from "@ionic/vue";
+
+const container = ref<HTMLElement>();
+const p = ref("");
+onMounted(() => {
+    // const gesture = createGesture({
+    //     el: container.value!,
+    //     threshold: 15,
+    //     gestureName: "logoff",
+    //     onStart: (ev) => {
+    //         console.log("onStart", ev);
+    //         p.value = ev.type;
+    //     },
+    //     onMove: (ev) => {
+    //         console.log("onMove", ev);
+    //         p.value = ev.type;
+    //     },
+    //     onEnd: (ev) => {
+    //         console.log("onEnd", ev);
+    //         p.value = ev.type;
+    //     },
+    // });
+    // gesture.enable();
+});
 
 // const window2 = window;
 // {{ window2.screen.width }}
@@ -26,12 +50,12 @@ import { IonPage, IonRouterOutlet } from "@ionic/vue";
                 <ConfirmDialog class="confirm-dialog-container" />
                 <div class="dialog-bg" @click="handleCloseDialog"></div>
             </div>
-            <div class="layout-container">
+            <div ref="container" class="layout-container">
                 <LayoutHeader class="layout-header" />
                 <!-- <LayoutMain class="layout-main" /> -->
                 <IonRouterOutlet
                     class="relative layout-main"
-                    :key="$route.name"
+                    :key="$route.name!"
                 ></IonRouterOutlet>
                 <LayoutBottom class="layout-bottom" />
             </div>

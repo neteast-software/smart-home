@@ -43,9 +43,10 @@ function tryExit() {
 </script>
 <template>
     <div class="left-container">
-        <img src="/images/Layout/Logo.svg" @click="tryExit" alt="Logo" />
+        <!-- <img src="@images/Layout/Logo.svg" @click="tryExit" alt="Logo" /> -->
+        <img src="@images/Layout/Logo.svg" @dblclick="toggle" alt="Logo" />
         <div class="NSelect-Container">
-            <img class="select-icon" src="/images/Layout/location.svg" alt="" />
+            <img class="select-icon" src="@images/Layout/location.svg" alt="" />
             <NSelect
                 class="NSelect"
                 v-model:value="areaId"
@@ -57,7 +58,7 @@ function tryExit() {
             <AreaOptionsPanel ref="areaOptionsPanelRef" />
         </div>
         <div class="current-time-container">
-            <!-- <img src="/images/Layout/time.svg" alt="time" /> -->
+            <!-- <img src="@images/Layout/time.svg" alt="time" /> -->
             <span class="current-time">{{ format(now, "MM月dd日") }}</span>
             {{ format(now, "HH:mm:ss") }}
         </div>
