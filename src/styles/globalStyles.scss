@@ -49,3 +49,13 @@ $theme-deep-blue: #232d42;
   background-color: $theme-card;
   text-align: center;
 }
+
+.custom-swiper-bullet {
+  background-color: #8a92a6 !important;
+  opacity: 1 !important;
+}
+.custom-swiper-bullet.custom-swiper-bullet-active {
+  background-color: white !important;
+  width: 30px !important;
+  border-radius: 4px !important;
+}

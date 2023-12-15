@@ -34,5 +34,5 @@ NavigationBar?.hide();
 const app = createApp(App).use(IonicVue).use(router).use(createPinia());
 
 router.isReady().then(() => {
-    app.mount("#app");
+  app.mount("#app");
 });

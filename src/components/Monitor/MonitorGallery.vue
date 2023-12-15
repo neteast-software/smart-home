@@ -1,245 +1,242 @@
 <template>
-    <section class="monitor-gallery">
-        <div class="monitor-grid-container" :class="`grid-${gridCount}`">
-            <img
-                class="monitor"
-                v-for="monitor in monitorList"
-                src="@images/Monitor/monitor-test.png"
-                alt=""
-            />
-        </div>
-        <!-- <draggable
-        :class="`grid-${gridCount}`"
-        :disabled="gridCount === 1"
-        v-model="monitorList"
-        group="monitor"
-        item-key="url"
+  <section class="monitor-gallery">
+    <!-- <div class="monitor-grid-container" :class="`grid-${gridCount}`">
+      <HlsMonitor
+        v-for="monitor in monitorList"
+        :key="monitor.indexCode"
+        class="monitor"
+        :src="monitor.videoStreamUrl"
+        @dblclick="pickMonitor(monitor)"
+      ></HlsMonitor>
+    </div> -->
+    <template v-if="sourceList.length">
+      <Swiper
+        class="monitor-grid-container"
+        :modules="modules"
+        navigation
+        :threshold="30"
+        style="--swiper-pagination-bottom: -45px"
+        @swiper="swiper = $event"
+        :pagination="{
+          clickable: true,
+          bulletClass: 'swiper-pagination-bullet custom-swiper-bullet',
+          bulletActiveClass:
+            'swiper-pagination-bullet-active custom-swiper-bullet-active',
+        }"
       >
-        <template #item="{ element: item, index }"> 123123 </template>
-      </draggable> -->
-        <!-- <Monitor
-        :controls="gridCount === 1"
-        :src="''"
-        :index-code="'123'"
-        :name="'test'"
-        @dblclick="pickMonitor(1)"
-      ></Monitor> -->
-        <!-- <template v-else>
-      <Monitor src="" index-code="" name=""></Monitor>
-    </template> -->
-        <!-- <MonitorSlider
-      ref="historyBar"
-      v-motion-slide-bottom
-      v-on-click-outside="() => (showHistory = false)"
-      v-if="showHistory"
-      class="absolute bottom-0 left-0 w-full z-50"
-    ></MonitorSlider> -->
-        <div class="grid-switch-container">
-            <!-- <button class="text-white z-50 bg-black/50 h-10 px-4 rounded-full mr-3" @click="showHistory = true">
-                历史记录
-            </button> -->
-            <div
-                class="switch-btn"
-                v-for="grid in gridOptions"
-                @click="gridCount = grid.num"
-                :class="{ 'switch-btn-active': gridCount === grid.num }"
-            >
-                {{ grid.num }}
-            </div>
+        <SwiperSlide
+          :class="`grid-${gridCount}`"
+          style="padding: 0 4px"
+          v-for="(_, groupIdx) in groupCount"
+        >
+          <div
+            ref="playerRefs"
+            style="height: 100%; background-color: red"
+            v-for="(monitor, idx) in sourceList.slice(
+              groupIdx * gridCount,
+              (groupIdx + 1) * gridCount
+            )"
+            :key="groupIdx * gridCount + idx"
+            @click.stop="pickMonitor(groupIdx * gridCount + idx)"
+          >
+            {{ monitor }}
+          </div>
+        </SwiperSlide>
+      </Swiper>
+    </template>
+    <template v-else>
+      <div
+        class="monitor-grid-container"
+        style="display: flex; justify-content: center; align-items: center"
+      >
+        <div style="position: relative">
+          <img
+            style="width: 300px"
+            src="../../assets/images/empty.png"
+            alt="empty"
+          />
+          <p
+            style="
+              position: absolute;
+              left: 50%;
+              transform: translateX(-50%);
+              bottom: 42px;
+            "
+          >
+            暂无视频监控
+          </p>
         </div>
-    </section>
+      </div>
+    </template>
+    <div class="grid-switch-container">
+      <div
+        class="switch-btn"
+        v-for="gridNum in gridOptions"
+        @click="gridCount = gridNum"
+        :class="{ 'switch-btn-active': gridCount === gridNum }"
+      >
+        {{ gridNum }}
+      </div>
+    </div>
+  </section>
 </template>
 
 <script setup lang="ts">
-import Monitor from "./Monitor.vue";
-import DevicePanel from "@/components/DevicesControle/DevicePanel.vue";
-// import MonitorSlider from "./MonitorSlider.vue";
-// import {
-//   getDefaultMonitorList,
-//   getMonitorInfo,
-// } from "@ebuild/utils/network/api/security";
-import { computed, ref, onMounted, watch } from "vue";
+import {
+  computed,
+  ref,
+  onMounted,
+  watch,
+  nextTick,
+  onBeforeUnmount,
+} from "vue";
+import { useSettingStore } from "@/stores/setting";
+import { getMonitorList } from "@/api";
+import type { MonitorItem } from "@/api/type";
+import HlsMonitor from "./HlsMonitor.vue";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Pagination, Navigation } from "swiper/modules";
+import { Swiper as SwiperClass } from "swiper";
+import "swiper/css";
+import "swiper/css/pagination";
+import Hammer from "hammerjs";
+import { init } from "echarts";
+const modules = [Pagination, Navigation];
+const swiper = ref<SwiperClass>();
+const playerRefs = ref<HTMLElement[]>([]);
+const setting = useSettingStore();
 
-import { MonitorItem } from "@/types/monitor";
-// import { pickMonitorKey } from "./helper";
-import { useEventBus, useDebounceFn } from "@vueuse/core";
-import draggable from "vuedraggable";
-import { isEmptyObject } from "@/utils/other";
-
-const gridOptions = [{ num: 1 }, { num: 6 }];
+const gridOptions = [1, 6];
 const gridCount = ref(6);
+const activeMonitorIdx = ref<number>(0);
 const sourceList = ref<MonitorItem[]>([]);
-const monitorList = computed({
-    get() {
-        // const total = sourceList.value.length;
-        // const count = gridCount.value;
-        // const gap = count - total < 0 ? 0 : count - total;
+// const sourceList2 = ref([1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
-        // console.log(1111111);
-        // console.log(
-        //   sourceList.value.slice(0, count).concat(new Array(gap).fill({}))
-        // );
+const groupCount = computed(() => {
+  return Math.ceil(sourceList.value.length / gridCount.value);
+});
 
-        // return sourceList.value.slice(0, count).concat(new Array(gap).fill({}));
-        return gridCount.value;
-    },
-    set(newList) {
-        // const l = newList.filter((item) => !isEmptyObject(item));
-        // sourceList.value.splice(0, l.length, ...l);
-    },
-});
-watch(monitorList, (val) => {
-    console.log("monitorList改变", val);
-});
 async function initMonitorList() {
-    //   const { data } = await getDefaultMonitorList();
-    //   sourceList.value = data;
-    // sourceList.value = [
-    //     {
-    //         url: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/tracks/1201starttime=20231018t171200z&endtime=20231018t235959z&fast=5',
-    //         indexCode:
-    //             'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/tracks/1201starttime=20231018t171200z&endtime=20231018t235959z&fast=5',
-    //         id: 24,
-    //         regionName: '测试监控',
-    //         regionPathName: '测试监控'
-    //     },
-    //     {
-    //         url: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/tracks/101?starttime=20231018t140000z&endtime=20231018t235959z',
-    //         indexCode:
-    //             'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/tracks/101?starttime=20231018t140000z&endtime=20231018t235959z',
-    //         id: 21,
-    //         regionName: '测试监控',
-    //         regionPathName: '测试监控'
-    //     },
-    //     {
-    //         url: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/201',
-    //         indexCode: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/201',
-    //         id: 22,
-    //         regionName: '测试监控',
-    //         regionPathName: '测试监控'
-    //     },
-    //     {
-    //         url: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/301',
-    //         indexCode: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/301',
-    //         id: 23,
-    //         regionName: '测试监控',
-    //         regionPathName: '测试监控'
-    //     },
-    //     {
-    //         url: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/501',
-    //         indexCode: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/501',
-    //         id: 25,
-    //         regionName: '测试监控',
-    //         regionPathName: '测试监控'
-    //     },
-    //     {
-    //         url: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/601',
-    //         indexCode: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/601',
-    //         id: 26,
-    //         regionName: '测试监控',
-    //         regionPathName: '测试监控'
-    //     },
-    //     {
-    //         url: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/701',
-    //         indexCode: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/701',
-    //         id: 27,
-    //         regionName: '测试监控',
-    //         regionPathName: '测试监控'
-    //     },
-    //     {
-    //         url: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/1001',
-    //         indexCode: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/1001',
-    //         id: 28,
-    //         regionName: '测试监控',
-    //         regionPathName: '测试监控'
-    //     },
-    //     {
-    //         url: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/901',
-    //         indexCode: 'rtsp://rcyktjsb001:Rcykt001@220.250.19.58:8554/Streaming/Channels/901',
-    //         id: 29,
-    //         regionName: '测试监控',
-    //         regionPathName: '测试监控'
-    //     }
-    // ];
+  const regionIndexCode = setting.activeFloorId;
+  if (!regionIndexCode) return;
+  const { data } = await getMonitorList(regionIndexCode);
+  if (!data) return;
+  sourceList.value = data.map((item) => item.list || []).flat();
 }
-onMounted(initMonitorList);
-function pickMonitor(index: number) {
-    const item = sourceList.value.splice(index, 1)[0];
-    sourceList.value.unshift(item);
-    gridCount.value = 1;
+watch(() => setting.activeFloorId, initMonitorList, { immediate: true });
+
+async function pickMonitor(idx: number) {
+  // if (gridCount.value === 1) {
+  //   // activeMonitorIdx.value = undefined;
+  //   gridCount.value = 6;
+  // } else {
+  //   activeMonitorIdx.value = idx;
+  //   gridCount.value = 1;
+  // }
+  console.log("选择监控", idx);
+  gridCount.value = gridCount.value === 1 ? 6 : 1;
+  const { value: swiperInst } = swiper;
+  if (!swiperInst) return;
+  await nextTick();
+  const slideIdx = Math.ceil((idx + 1) / gridCount.value) - 1;
+  swiperInst.slideTo(slideIdx);
 }
 
-// 历史回放
-const showHistory = ref(false);
-const addMonitorLock = useDebounceFn(addMonitor, 300);
-async function addMonitor(indexCode: string) {
-    sourceList.value.unshift({ indexCode } as unknown as MonitorItem);
-    //   const { data } = await getMonitorInfo(indexCode);
-    // sourceList.value.unshift(data);
-    const idx = sourceList.value.findIndex(
-        (item) => item.indexCode === indexCode
-    );
-    //   sourceList.value.splice(idx, 1, data);
-    //   console.log("新增显示器data", data, sourceList.value);
+let hammers: any[] = [];
+function initHammers() {
+  destroyHammers();
+  const { value: players } = playerRefs;
+  if (!players) return;
+  hammers = players.map((player, idx) => {
+    const hammer = new Hammer(player);
+    hammer.on("doubletap", (e) => {
+      console.log("双击", idx);
+      pickMonitor(idx);
+    });
+    return hammer;
+  });
 }
-// const monitorBus = useEventBus(pickMonitorKey);
-// monitorBus.on((indexCode: string) => {
-//   addMonitorLock(indexCode);
+function destroyHammers() {
+  if (!hammers) return;
+  hammers.forEach((hammer) => {
+    hammer?.destroy();
+    hammer = null;
+  });
+  hammers = [];
+}
+// onMounted(initHammers);
+// watch(gridCount, () => {
+//   console.log("变了", playerRefs.value);
+//   initHammers();
 // });
+// onBeforeUnmount(destroyHammers);
 </script>
 
 <style lang="scss" scoped>
 @import "@/styles/globalStyles.scss";
+// .custom-swiper-slider {
+//   height: calc(100% - 50px);
+// }
 .monitor-gallery {
-    position: relative;
-    width: 100vw;
-    height: 75vh;
+  position: relative;
+  width: 100vw;
+  height: 75vh;
 }
 .monitor-grid-container {
-    position: relative;
-    width: 100vw;
-    height: 70vh;
+  position: relative;
+  width: 100vw;
+  height: 70vh;
+  overflow: visible;
 }
 .grid-1 {
-    .monitor {
-        width: 100vw;
-        height: 100%;
-        object-fit: contain;
-    }
+  display: grid;
+  gap: 4px;
+  // .monitor {
+  //   width: 100vw;
+  //   height: 100%;
+  //   object-fit: contain;
+  // }
 }
 .grid-6 {
-    //   display: flex;
-    //   flex-wrap: wrap;
-    display: grid;
-    grid-template-columns: 33% 33% 33%;
-    grid-template-rows: 50% 50%;
-    gap: 0;
-    .monitor {
-        height: 100% !important;
-        object-fit: contain;
-    }
+  //   display: flex;
+  //   flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 4px;
+  .monitor {
+    width: 100%;
+    height: 100%;
+    // height: 100% !important;
+    // object-fit: contain;
+  }
 }
 
 .grid-switch-container {
-    position: absolute;
-    right: 0;
-    bottom: 0;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  .switch-btn {
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+    text-align: center;
+    line-height: 18px;
+    border-radius: 4px;
+    border: 2px solid #fff;
+    opacity: 0.4;
+    transition: all 0.15s ease;
+    margin-right: 12px;
+    cursor: pointer;
     display: flex;
-    .switch-btn {
-        width: 18px;
-        height: 18px;
-        font-size: 14px;
-        text-align: center;
-        line-height: 18px;
-        border-radius: 4px;
-        border: 2px solid #fff;
-        opacity: 0.4;
-        transition: all 0.15s ease;
-        margin-right: 12px;
-        cursor: pointer;
-    }
-    .switch-btn-active {
-        opacity: 1;
-    }
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 999;
+  }
+  .switch-btn-active {
+    opacity: 1;
+  }
 }
 </style>

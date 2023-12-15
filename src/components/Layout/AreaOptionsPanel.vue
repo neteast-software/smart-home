@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import MonitorGallery from "@/components/Monitor/MonitorGallery.vue";
-import { ref } from "vue";
+import { getAreaTree } from "@/api";
+import type { AreaTreeNode } from "@/api/type";
+import { onMounted, ref } from "vue";
+import { useSettingStore } from "@/stores/setting";
 const panelShow = ref(false);
 const toggleOptionsPanel = () => {
   panelShow.value = !panelShow.value;
@@ -10,78 +13,34 @@ const hideOptionsPanel = () => {
   panelShow.value = false;
 };
 defineExpose({ toggleOptionsPanel, hideOptionsPanel });
-const areaOption = [
-  {
-    id: 2,
-    name: "南楼",
-    children: [
-      {
-        id: 26,
-        name: "4楼",
-      },
-      {
-        id: 27,
-        name: "5楼",
-      },
-      {
-        id: 64,
-        name: "6楼",
-      },
-      {
-        id: 65,
-        name: "7楼",
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "北楼",
-    children: [
-      {
-        id: 66,
-        name: "4楼",
-      },
-      {
-        id: 67,
-        name: "5楼",
-      },
-      {
-        id: 68,
-        name: "6楼",
-      },
-      {
-        id: 69,
-        name: "7楼",
-      },
-      {
-        id: 70,
-        name: "8楼",
-      },
-      {
-        id: 71,
-        name: "9楼",
-      },
-    ],
-  },
-  {
-    id: 4,
-    name: "综合楼",
-    children: [
-      {
-        id: 63,
-        name: "1楼",
-      },
-      {
-        id: 72,
-        name: "2楼",
-      },
-      {
-        id: 73,
-        name: "3楼",
-      },
-    ],
-  },
-];
+const emit = defineEmits<{
+  pick: [id: string, name: string];
+}>();
+const setting = useSettingStore();
+const areaTree = ref<AreaTreeNode[]>([]);
+async function initData() {
+  const { data } = await getAreaTree();
+  if (data && data.length == 1 && data[0].childrenList?.length) {
+    areaTree.value = data[0].childrenList;
+    const firstArea = data[0].childrenList[0];
+    if (!firstArea) return;
+    const firstFloor = firstArea.childrenList?.[0];
+    if (firstFloor)
+      pickFloor(
+        firstFloor.regionIndexCode,
+        firstFloor.regionName,
+        firstArea.regionName
+      );
+  }
+}
+onMounted(initData);
+const activeFloor = ref<string>();
+function pickFloor(id: string, floorName: string, areaName: string) {
+  activeFloor.value = id;
+  emit("pick", id, `${areaName}${floorName}`);
+  setting.setActiveFloorId(id);
+  setTimeout(hideOptionsPanel, 250);
+}
 </script>
 <template>
   <div
@@ -95,17 +54,30 @@ const areaOption = [
     :class="{ 'area-options-panel-show': panelShow }"
   >
     <div class="area-options-contaienr">
-      <div class="area-group" v-for="group in areaOption">
-        <div class="group-name">
-          {{ group.name }}
-        </div>
-        <!-- @touchend="hideOptionsPanel" -->
-        <div class="group-options-container">
-          <div class="group-option" v-for="option in group.children">
-            F{{ option.name.slice(0, 1) }}
+      <template v-for="area in areaTree" :key="area.id">
+        <div class="area-group" v-if="area.childrenList?.length">
+          <div class="group-name">
+            {{ area.regionName }}
+          </div>
+          <!-- @touchend="hideOptionsPanel" -->
+          <div class="group-options-container">
+            <div
+              class="group-option"
+              v-for="floor in area.childrenList"
+              :key="floor.regionIndexCode"
+              @click="
+                pickFloor(
+                  floor.regionIndexCode,
+                  floor.regionName,
+                  area.regionName
+                )
+              "
+            >
+              {{ floor.regionName }}
+            </div>
           </div>
         </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
@@ -162,9 +134,7 @@ const areaOption = [
   left: 6%;
   transform: translateX(-50%) rotate(45deg);
 }
-.area-options-contaienr
-  .area-group:nth-child(3)
-  .group-options-container::after {
+.area-options-contaienr .area-group:last-child .group-options-container::after {
   content: none;
 }
 
