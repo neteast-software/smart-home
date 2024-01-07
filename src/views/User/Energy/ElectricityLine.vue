@@ -2,24 +2,11 @@
   <div class="wrap">
     <div class="energy-container">
       <EnergyCard
-        title="综合能耗"
-        unit="Kgce"
-        :yoy="summary.yoy"
-        :mom="summary.mom"
-        :total-energy="summary.buildingComprehensiveEnergy"
-      >
-        <div>
-          碳排<span
-            :style="{
-              textShadow: 'none',
-              marginLeft: '16px',
-              color: summary.carbonEmission >= 0 ? '#4DC591' : '#FF7648',
-            }"
-            >{{ summary.carbonEmission >= 0 ? "+" : "" }}
-            {{ summary.carbonEmission?.toFixed(2) }} kg</span
-          >
-        </div>
-      </EnergyCard>
+        :energyList="data"
+        title="用电量统计"
+        unit="kw/h"
+        v-bind="summary"
+      ></EnergyCard>
     </div>
     <div class="lineChart">
       <LineChart
@@ -28,7 +15,7 @@
         yAxisName="数值"
         :series="series"
         :color="colors"
-        unit="km³"
+        unit="kw/h"
       ></LineChart>
       <div class="button">
         <div
@@ -55,43 +42,58 @@ import * as echarts from "echarts/core";
 import { hexToRgba } from "@/components/echart/color";
 import { lineDefaultSeries } from "@/components/echart/index";
 import { LineSeriesOption } from "echarts/charts";
-import { getEnergyChart, getEnergySummary, type Summary } from "@/api/index";
+import {
+  getWaterElectricityChart,
+  getWaterElectricitySummary,
+  type Summary,
+} from "@/api/index";
 import { createChartSource } from "@/utils/business";
 import EnergyCard from "./EnergyCard.vue";
 import { useSettingStore } from "@/stores/setting";
 import { useTimeoutPoll } from "@vueuse/core";
-const settting = useSettingStore();
+const setting = useSettingStore();
 const source = ref<(number | string)[][]>([]);
 
-const timeTypeList = [{ label: "月", value: "3" }] as const;
+const timeTypeList = [
+  { label: "月", value: "3" },
+  { label: "近", value: "1" },
+] as const;
 const activeTimeType = ref<"1" | "3">(timeTypeList[0].value);
 
 async function initChart() {
-  const { data } = await getEnergyChart();
+  if (!setting.activeFloorId) return;
+  const { data } = await getWaterElectricityChart(
+    activeTimeType.value,
+    "29",
+    setting.activeFloorId
+  );
   if (!data) return;
   const { dataBody } = data;
   source.value = createChartSource(dataBody);
-  console.log("接口上岛咖啡", data);
-  // source.value = res.data;
+  console.log("接口上岛咖啡", source.value);
 }
 
 const summary = ref<Summary>({
+  totalEnergy: 0,
   yoy: 0,
   mom: 0,
-  buildingComprehensiveEnergy: 0,
-  carbonEmission: 0,
 });
 async function initSummary() {
-  const { data } = await getEnergySummary();
-  console.log("综合能耗概要", data);
+  const { data } = await getWaterElectricitySummary(
+    activeTimeType.value,
+    "29",
+    setting.activeFloorId
+  );
   summary.value = data;
 }
+
 function init() {
-  if (!settting.activeFloorId) return;
+  if (!setting.activeFloorId) return;
   initChart();
   initSummary();
 }
-watch(() => settting.activeFloorId, init);
+
+watch(() => setting.activeFloorId, init);
 const { resume } = useTimeoutPoll(init, 10000);
 onMounted(resume);
 
@@ -118,6 +120,7 @@ const series = computed<LineSeriesOption[]>(() => {
       };
     });
 });
+
 const data = {
   title: "用电量统计",
   total: 1038,

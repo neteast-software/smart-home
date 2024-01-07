@@ -65,7 +65,8 @@ function destroyChart() {
 } // 销毁图表
 function updateChart(option: ECOption) {
   if (!echartsInstance) return;
-  echartsInstance.setOption(props.option);
+  console.log("更新echart", option);
+  echartsInstance.setOption(option, true);
 } // 更新图表
 function renderChart() {
   echartsInstance = echarts.init(chart.value!);

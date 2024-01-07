@@ -2,12 +2,17 @@
 import { useDialogManagerStore } from "@/stores/dialogManager";
 import { storeToRefs } from "pinia";
 const dialogManager = useDialogManagerStore();
-const { dialogHtmlContent } = storeToRefs(dialogManager);
+const { dialogHtmlContent, dialogHtmlHeader } = storeToRefs(dialogManager);
 const { handleCloseDialog, handleConfirm } = dialogManager;
 </script>
 <template>
   <div class="confirm-dialog-container">
-    <div class="dialog-header">
+    <div
+      class="dialog-header"
+      v-if="dialogHtmlContent"
+      v-html="dialogHtmlHeader"
+    ></div>
+    <div class="dialog-header" v-else>
       <div class="tips-icon">!</div>
       确认您的操作
     </div>

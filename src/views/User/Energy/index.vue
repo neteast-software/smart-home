@@ -1,26 +1,8 @@
 <template>
   <div class="energy-main">
-    <div class="energy-container">
-      <EnergyCard :energyList="energyList1">
-        <div>
-          碳排<span
-            :style="{
-              color: '#4DC591',
-              textShadow: 'none',
-              marginLeft: '16px',
-            }"
-            >+ 3023 kg</span
-          >
-        </div>
-      </EnergyCard>
-      <EnergyCard :energyList="energyList2"></EnergyCard>
-      <EnergyCard :energyList="energyList3"></EnergyCard>
-    </div>
-    <div class="energy-lineChart">
-      <EnergyLine :source="source" unit="kgce"></EnergyLine>
-      <EnergyLine :source="source" unit="kw/h"></EnergyLine>
-      <EnergyLine :source="source" unit="km³"></EnergyLine>
-    </div>
+    <EnergyLine></EnergyLine>
+    <ElectricityLine></ElectricityLine>
+    <WaterLine></WaterLine>
   </div>
 </template>
 
@@ -28,6 +10,10 @@
 import { onMounted, ref } from "vue";
 import EnergyCard from "./EnergyCard.vue";
 import EnergyLine from "./EnergyLine.vue";
+import WaterLine from "./WaterLine.vue";
+import ElectricityLine from "./ElectricityLine.vue";
+import { getWaterElectricityChart } from "@/api/index";
+
 const energyList1 = ref({
   title: "综合能耗",
   total: 1038,
@@ -84,22 +70,25 @@ onMounted(() => {
 .energy-main {
   height: 100%;
   width: 100%;
-  display: flex;
-  .energy-container {
-    width: 30%;
-    padding-left: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-right: 25px;
-  }
+  gap: 20px;
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  // display: flex;
 }
-.energy-lineChart {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  flex: 1 1 0%;
-  width: 0;
-  margin-right: 45px;
-}
+// .energy-container {
+//   width: 30%;
+//   padding-left: 40px;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 15px;
+//   margin-right: 25px;
+// }
+// .energy-lineChart {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 15px;
+//   flex: 1 1 0%;
+//   width: 0;
+//   margin-right: 45px;
+// }
 </style>

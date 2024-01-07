@@ -22,15 +22,28 @@ async function initData() {
   const { data } = await getAreaTree();
   if (data && data.length == 1 && data[0].childrenList?.length) {
     areaTree.value = data[0].childrenList;
-    const firstArea = data[0].childrenList[0];
-    if (!firstArea) return;
-    const firstFloor = firstArea.childrenList?.[0];
-    if (firstFloor)
-      pickFloor(
-        firstFloor.regionIndexCode,
-        firstFloor.regionName,
-        firstArea.regionName
+    // const firstArea = data[0].childrenList[0];
+    // if (!firstArea) return;
+    // const firstFloor = firstArea.childrenList?.[0];
+    // if (firstFloor)
+    //   pickFloor(
+    //     firstFloor.regionIndexCode,
+    //     firstFloor.regionName,
+    //     firstArea.regionName
+    //   );
+    const pickArea = data[0].childrenList[1];
+    if (pickArea) {
+      const pickerFloor = pickArea.childrenList?.find(
+        (item) => item.regionIndexCode == "71"
       );
+      if (pickerFloor)
+        pickFloor(
+          pickerFloor.regionIndexCode,
+          pickerFloor.regionName,
+          pickArea.regionName
+        );
+    }
+    // const pickerFoor =
   }
 }
 onMounted(initData);

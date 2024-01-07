@@ -1,10 +1,13 @@
-import { ref } from "vue";
+import { ref, shallowRef } from "vue";
 import { defineStore } from "pinia";
+import Dialog from "@/components/Dialog";
+
 // import UserApi from '@/api/UserApi'
 
 export const useUserStore = defineStore("user", () => {
   const tokenName = "tokenAuth";
   const token = ref<string>("");
+  const loginDialog = shallowRef<Dialog>();
   function setToken(newToken: string) {
     localStorage.setItem(tokenName, newToken);
     token.value = newToken;
@@ -31,5 +34,20 @@ export const useUserStore = defineStore("user", () => {
     removeToken();
     userInfo.value = null;
   }
-  return { token, setToken, removeToken, clearStore, userInfo, getUserInfo };
+  function setLoginDialog(dialog: Dialog) {
+    loginDialog.value = dialog;
+  }
+  function showLoginDialog() {
+    loginDialog.value?.show();
+  }
+  return {
+    token,
+    setToken,
+    removeToken,
+    clearStore,
+    userInfo,
+    getUserInfo,
+    setLoginDialog,
+    showLoginDialog,
+  };
 });

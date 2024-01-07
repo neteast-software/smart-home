@@ -6,6 +6,7 @@ import storage from "./storage";
 // import router from '@ebuild/router';
 import { md5 } from "./crypto";
 import qs from "qs";
+import { useUserStore } from "@/stores/user";
 
 function clearUrl(url: string) {
   return url.replace(/([^:]\/)\/+/g, "$1");
@@ -240,16 +241,19 @@ class Requestor {
           break;
         case 401:
           ret = Promise.reject("未登录");
+          const userStore = useUserStore();
           // router.push('/login');
-
+          userStore.showLoginDialog();
           break;
-        // case 403:
-        //     ret = Promise.reject('无权限');
-        //     window.$notification?.error({
-        //         content: ret.msg,
-        //         duration: 3000
-        //     });
-        //     break;
+        case 403:
+          console.log("403错误", ret);
+          window.$message?.error(ret.msg);
+          // window.$message?.error({
+          //   content: ret.msg as string,
+          //   duration: 3000,
+          // });
+          ret = Promise.reject("异常");
+          break;
         default:
           // window.$message?.create(ret.msg || ret.error, {
           //     type: ret?.type || 'error'

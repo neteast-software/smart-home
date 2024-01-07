@@ -1,10 +1,11 @@
 import { ref, watch } from "vue";
 import { defineStore } from "pinia";
 
-export const useDialogManagerStore = defineStore("user", () => {
+export const useDialogManagerStore = defineStore("dialog", () => {
   const dialogContainerRef = ref<HTMLElement>();
 
   const dialogHtmlContent = ref<string>("");
+  const dialogHtmlHeader = ref<string>("");
   const showDialog = ref<boolean>(false);
   const successCallback = ref<Function | null>(null);
 
@@ -46,5 +47,6 @@ export const useDialogManagerStore = defineStore("user", () => {
     handleCloseDialog,
     handleConfirm,
     dialogHtmlContent,
+    dialogHtmlHeader,
   };
 });
