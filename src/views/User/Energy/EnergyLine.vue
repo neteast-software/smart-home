@@ -60,6 +60,7 @@ import { createChartSource } from "@/utils/business";
 import EnergyCard from "./EnergyCard.vue";
 import { useSettingStore } from "@/stores/setting";
 import { useTimeoutPoll } from "@vueuse/core";
+import {} from "@ionic/vue";
 const settting = useSettingStore();
 const source = ref<(number | string)[][]>([]);
 

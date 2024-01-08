@@ -5,10 +5,10 @@ import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "/smartHome",
-  build: {
-    outDir: "dist/smartHome",
-  },
+  // base: "/smartHome",
+  // build: {
+  //   outDir: "dist/smartHome",
+  // },
   plugins: [vue(), legacy()],
   resolve: {
     alias: {

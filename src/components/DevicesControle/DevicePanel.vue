@@ -13,14 +13,14 @@
         >
       </div>
     </div>
-    <div class="device-btn">
+    <div class="device-btn" style="height: 40px">
       <template v-if="swich">
         <NButton
           color="#8596A4"
           style="
             color: white;
-            width: 100px;
-            height: 40px;
+            width: 90px;
+            height: 36px;
             border: 1px solid rgba(33, 47, 67, 0.3);
           "
           @click="
@@ -33,8 +33,8 @@
           color="#232D42"
           style="
             color: white;
-            width: 100px;
-            height: 40px;
+            width: 90px;
+            height: 36px;
             border: 1px solid rgba(33, 47, 67, 0.3);
           "
           @click="
@@ -84,46 +84,60 @@
             >取消</NButton
           >
         </div>
-        <div class="dialog-footer">当前登录身份：林鱼丸</div>
+        <div v-if="user.nickname" class="dialog-footer">
+          当前登录身份：{{ user.nickname }}
+        </div>
       </div>
     </NModal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, inject, computed } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { NModal, NButton } from "naive-ui";
-import { batchControlSwitch } from "@/api";
+import { batchControlSwitch, getDeviceOnlineCount } from "@/api";
 import { useSettingStore } from "@/stores/setting";
+import { useTimeoutPoll } from "@vueuse/core";
+import { useUserStore } from "@/stores/user";
 interface Props {
   label?: string;
   name?: string;
   img?: string;
-  counts?: { name: string; value: number }[];
   swich?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {});
 
 const setting = useSettingStore();
-// const typeList = inject<{name: string, value: string}[]>("typeList");
+const user = useUserStore();
 const showConfirm = ref(false);
 const swichText = ref("全关");
 
-// const onlineCount = computed(() => {
-//   const { counts } = props;
-//   if (!counts) return;
-//   return counts.find((item) => item.name === "在线")?.value;
-// });
-// const offlineCount = computed(() => {
-//   const { counts } = props;
-//   if (!counts) return;
-//   return counts.find((item) => item.name === "离线")?.value;
-// });
+const counts = ref<{ name: string; value: number }[]>([
+  { name: "在线", value: 0 },
+  { name: "离线", value: 0 },
+]);
+async function initCounts() {
+  if (!setting.activeFloorId) return;
+  const { data } = await getDeviceOnlineCount(
+    props.name!,
+    setting.activeFloorId
+  );
+  counts.value = data;
+}
+watch(() => setting.activeFloorId, initCounts);
+const { resume } = useTimeoutPoll(initCounts, 10000);
+onMounted(resume);
 
 async function onConfirm() {
   const open = swichText.value === "全开";
   try {
-    await batchControlSwitch(setting.activeFloorId, props.name!, open);
+    const { msg } = await batchControlSwitch(
+      setting.activeFloorId,
+      props.name!,
+      open
+    );
+    window.$message?.success(msg);
+    initCounts();
   } finally {
     showConfirm.value = false;
   }

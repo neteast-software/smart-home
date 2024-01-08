@@ -15,6 +15,7 @@
         :modules="modules"
         navigation
         :threshold="30"
+        :key="groupCount"
         style="--swiper-pagination-bottom: -45px"
         @swiper="swiper = $event"
         :pagination="{
@@ -28,8 +29,9 @@
           :class="`grid-${gridCount}`"
           style="padding: 0 4px"
           v-for="(_, groupIdx) in groupCount"
+          :key="`${groupCount}-${groupIdx}`"
         >
-          <div
+          <!-- <div
             ref="playerRefs"
             style="height: 100%; background-color: red"
             v-for="(monitor, idx) in sourceList.slice(
@@ -40,7 +42,18 @@
             @click.stop="pickMonitor(groupIdx * gridCount + idx)"
           >
             {{ monitor }}
-          </div>
+          </div> -->
+          <HlsMonitor
+            ref="playerRefs"
+            style="height: 100%"
+            v-for="(monitor, idx) in sourceList.slice(
+              groupIdx * gridCount,
+              (groupIdx + 1) * gridCount
+            )"
+            :src="monitor.videoStreamUrl"
+            :key="groupIdx * gridCount + idx"
+            @click.stop="pickMonitor(groupIdx * gridCount + idx)"
+          ></HlsMonitor>
         </SwiperSlide>
       </Swiper>
     </template>
@@ -49,7 +62,8 @@
         class="monitor-grid-container"
         style="display: flex; justify-content: center; align-items: center"
       >
-        <div style="position: relative">
+        <NSpin v-if="loading" size="large" :show="loading"></NSpin>
+        <div v-else style="position: relative">
           <img
             style="width: 300px"
             src="../../assets/images/empty.png"
@@ -100,6 +114,7 @@ import { Swiper as SwiperClass } from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
 import Hammer from "hammerjs";
+import { NSpin } from "naive-ui";
 import { init } from "echarts";
 const modules = [Pagination, Navigation];
 const swiper = ref<SwiperClass>();
@@ -116,15 +131,25 @@ const groupCount = computed(() => {
   return Math.ceil(sourceList.value.length / gridCount.value);
 });
 
+const loading = ref(false);
 async function initMonitorList() {
   const regionIndexCode = setting.activeFloorId;
   if (!regionIndexCode) return;
-  const { data } = await getMonitorList(regionIndexCode);
-  if (!data) return;
-  sourceList.value = data.map((item) => item.list || []).flat();
+  loading.value = true;
+  try {
+    const { data } = await getMonitorList(regionIndexCode);
+    if (!data) return;
+    sourceList.value = data
+      .filter((item) => item.list)
+      .map((item) => item.list || [])
+      .flat();
+    console.log("监控列表", sourceList.value);
+  } finally {
+    loading.value = false;
+  }
 }
 watch(() => setting.activeFloorId, initMonitorList, { immediate: true });
-
+// onMounted(initMonitorList);
 async function pickMonitor(idx: number) {
   // if (gridCount.value === 1) {
   //   // activeMonitorIdx.value = undefined;

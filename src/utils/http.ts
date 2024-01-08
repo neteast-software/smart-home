@@ -236,7 +236,7 @@ class Requestor {
           // if (ret?.type === 'success' && ret?.msg) {
           //     window.$message?.success(ret.msg);
           // }
-          delete ret.msg;
+          // delete ret.msg;
           delete ret.code;
           break;
         case 401:

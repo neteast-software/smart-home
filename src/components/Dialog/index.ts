@@ -29,6 +29,7 @@ type DialogSlots = {
 interface DialogOptions extends DialogSlots {
   title?: string;
   loading?: MaybeRef<boolean>;
+  maskCloseable?: boolean;
   onConfirm?: () => void | Promise<void>;
   onCancel?: () => void | Promise<void>;
 }
@@ -54,6 +55,7 @@ export default class Dialog {
         props: {
           show: this._show.value,
           title: options?.title,
+          maskClosable: options?.maskCloseable,
           loading: unref(options?.loading),
           "onUpdate:show": (value: boolean) => {
             this._show.value = value;
@@ -73,6 +75,7 @@ export default class Dialog {
     tryOnScopeDispose(this.destory);
   }
   show() {
+    if (this._show.value) return;
     this._show.value = true;
   }
   hide() {

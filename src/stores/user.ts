@@ -8,6 +8,7 @@ export const useUserStore = defineStore("user", () => {
   const tokenName = "tokenAuth";
   const token = ref<string>("");
   const loginDialog = shallowRef<Dialog>();
+  const nickname = ref<string>("");
   function setToken(newToken: string) {
     localStorage.setItem(tokenName, newToken);
     token.value = newToken;
@@ -40,6 +41,9 @@ export const useUserStore = defineStore("user", () => {
   function showLoginDialog() {
     loginDialog.value?.show();
   }
+  function setNickName(name: string) {
+    nickname.value = name;
+  }
   return {
     token,
     setToken,
@@ -49,5 +53,7 @@ export const useUserStore = defineStore("user", () => {
     getUserInfo,
     setLoginDialog,
     showLoginDialog,
+    nickname,
+    setNickName,
   };
 });

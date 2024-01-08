@@ -9,10 +9,19 @@ export const login = async (username: string, password: string) => {
   );
   return data.value!;
 };
+
+// 获取用户信息
+export const getUserInfo = async () => {
+  const { data } = await http.get<{ data: { nickName: string } }>(
+    "/system/user/getInfo"
+  );
+  return data.value!;
+};
+
 // 获取区域树
 export const getAreaTree = async () => {
   const { data } = await http.get<{ data: AreaTreeNode[] }>(
-    "/video/screen/getRegionSelectList"
+    "/cii/screen/getRegionSelectList"
   );
   return data.value!;
 };
@@ -33,7 +42,7 @@ export const getWaterElectricityChart = async (
   energyType: "29" | "30" = "29",
   regionId: number | string
 ) => {
-  const { data } = await http.get("/cii/energyUse/areaLineByFloor", {
+  const { data } = await http.get("/cii/screen/areaLineByFloor", {
     timeType,
     energyType,
     regionId,
@@ -54,7 +63,7 @@ export const getWaterElectricitySummary = async (
   regionId: number | string
 ) => {
   const { data } = await http.get<{ data: Summary }>(
-    "/cii/energyUse/areaTotalByFloor",
+    "/cii/screen/areaTotalByFloor",
     {
       timeType,
       energyType,
@@ -73,14 +82,14 @@ export const getTemperatureHumidity = async (id: number) => {
 // 获取综合能耗概要
 export const getEnergySummary = async () => {
   const { data } = await http.get<{ data: Summary }>(
-    "/cii/energyUse/getCecDetail"
+    "/cii/screen/getCecDetail"
   );
   return data.value!;
 };
 
 // 获取综合能耗图表
 export const getEnergyChart = async () => {
-  const { data } = await http.get("/cii/energyUse/cecLineByFloor");
+  const { data } = await http.get("/cii/screen/cecLineByFloor");
   return data.value!;
 };
 
@@ -98,15 +107,16 @@ export const batchControlSwitch = async (
   return data.value!;
 };
 
-export interface DeviceOnlineCountMap {
-  [key: string]: { name: string; value: number }[];
-}
 // 批量获取设备在线数量
-export const batchGetDeviceOnlineCount = async (type: string[]) => {
-  const { data } = await http.get<{ data: DeviceOnlineCountMap }>(
-    "/device/analysis/count/online/multi",
+export const getDeviceOnlineCount = async (
+  type: string,
+  area_id: number | string
+) => {
+  const { data } = await http.get<{ data: { name: string; value: number }[] }>(
+    "/device/analysis/count/online",
     {
       type,
+      area_id: area_id && Number(area_id),
     }
   );
   return data.value!;

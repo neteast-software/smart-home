@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import AreaOptionsPanel from "@/components/Layout/AreaOptionsPanel.vue";
 import { App } from "@capacitor/app";
 import { useSettingStore } from "@/stores/setting";
+import storage from "@/utils/storage";
 const setting = useSettingStore();
 const areaOptionsPanelRef = ref<InstanceType<typeof AreaOptionsPanel>>();
 const now = useNow();
@@ -24,7 +25,11 @@ const resetExitFlag = useDebounceFn(() => {
   exitFlag = 0;
 }, 800);
 const exitApp = useThrottleFn(() => {
-  App?.exitApp().catch(toggle);
+  App?.exitApp()
+    .then(() => {
+      storage.clear();
+    })
+    .catch(toggle);
 }, 1000);
 
 function tryExit() {
@@ -44,7 +49,7 @@ function onPickFloor(id: string, name: string) {
 <template>
   <div class="left-container">
     <!-- <img src="@images/Layout/Logo.svg" @click="tryExit" alt="Logo" /> -->
-    <img src="@images/Layout/Logo.svg" @dblclick="toggle" alt="Logo" />
+    <img src="@images/Layout/Logo.svg" @click="tryExit" alt="Logo" />
     <div class="NSelect-Container">
       <img class="select-icon" src="@images/Layout/location.svg" alt="" />
       <NSelect

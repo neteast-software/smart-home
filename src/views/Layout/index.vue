@@ -10,17 +10,17 @@ import { IonPage, IonRouterOutlet, createGesture } from "@ionic/vue";
 import { onMounted, ref, h, reactive } from "vue";
 import Dialog from "@/components/Dialog";
 import { useUserStore } from "@/stores/user";
-import { login as loginApi } from "@/api";
+import { login as loginApi, getUserInfo } from "@/api";
 import storage from "@/utils/storage";
 import LoginForm from "@/components/LoginForm.vue";
 import { useRouter } from "vue-router";
+
 const dialogManager = useDialogManagerStore();
 const { dialogContainerRef, showDialog } = storeToRefs(dialogManager);
 const { handleCloseDialog } = dialogManager;
 const userStore = useUserStore();
 const router = useRouter();
 const container = ref<HTMLElement>();
-const p = ref("");
 onMounted(() => {});
 
 const account = reactive({
@@ -31,6 +31,7 @@ const account = reactive({
 const loading = ref(false);
 const loginDialog = new Dialog(container, {
   title: "权限确认",
+  maskCloseable: false,
   onConfirm: login,
   onCancel: () => {
     router.replace("/user/energy");
@@ -65,6 +66,9 @@ async function login() {
     const { access_token } = data;
     storage.set("access_token", access_token);
     loginDialog.hide();
+    const { data: userInfo } = await getUserInfo();
+    userStore.setNickName(userInfo.nickName);
+    router.go(0);
   } catch {
     account.feedback = "账号或密码错误";
   } finally {

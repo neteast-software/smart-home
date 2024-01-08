@@ -6,24 +6,8 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import {
-  batchGetDeviceOnlineCount,
-  getDeviceTypeList,
-  type DeviceOnlineCountMap,
-} from "@/api";
 import { useTimeoutPoll } from "@vueuse/core";
 
-const countsMap = ref<DeviceOnlineCountMap>({});
-async function initCounts() {
-  const { data } = await batchGetDeviceOnlineCount([
-    "Lighting",
-    "AirConditioner",
-    "SmartWaterMeter",
-    "SmartElectricMeter",
-  ]);
-  countsMap.value = data;
-  console.log("data", data);
-}
 const typeList = ref<{ name: string; value: string }[]>([]);
 // async function initTypeList() {
 //   const { data } = await getDeviceTypeList();
@@ -32,7 +16,7 @@ const typeList = ref<{ name: string; value: string }[]>([]);
 // provide("typeList", typeList);
 
 function init() {
-  initCounts();
+  // initCounts();
   // initTypeList();
 }
 const { resume } = useTimeoutPoll(init, 10000);
@@ -43,31 +27,23 @@ const devicesList = computed(() => [
   {
     label: "照明",
     name: "Lighting",
-    counts: countsMap.value["Lighting"],
-    id: 1,
     swich: true,
     img: new URL("@images/Devices/light.png", import.meta.url).href,
   },
   {
     label: "空调",
     name: "AirConditioner",
-    counts: countsMap.value["AirConditioner"],
-    id: 1,
     swich: true,
-    img: new URL("@images/Devices/Monitor-4x.png", import.meta.url).href,
+    img: new URL("@images/Devices/AirConditioner.png", import.meta.url).href,
   },
   {
     label: "水表",
     name: "SmartWaterMeter",
-    counts: countsMap.value["SmartWaterMeter"],
-    id: 1,
     img: new URL("@images/Devices/SmartWaterMeter.png", import.meta.url).href,
   },
   {
     label: "电表",
     name: "SmartElectricMeter",
-    counts: countsMap.value["SmartElectricMeter"],
-    id: 1,
     img: new URL("@images/Devices/SmartElectricMeter.png", import.meta.url)
       .href,
   },
