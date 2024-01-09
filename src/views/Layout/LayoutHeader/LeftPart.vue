@@ -37,7 +37,6 @@ function tryExit() {
     exitApp();
     return;
   }
-  console.log("运行到这");
   exitFlag++;
   resetExitFlag();
 }

@@ -60,7 +60,6 @@ import { createChartSource } from "@/utils/business";
 import EnergyCard from "./EnergyCard.vue";
 import { useSettingStore } from "@/stores/setting";
 import { useTimeoutPoll } from "@vueuse/core";
-import {} from "@ionic/vue";
 const settting = useSettingStore();
 const source = ref<(number | string)[][]>([]);
 
@@ -68,12 +67,14 @@ const timeTypeList = [{ label: "月", value: "3" }] as const;
 const activeTimeType = ref<"1" | "3">(timeTypeList[0].value);
 
 async function initChart() {
-  const { data } = await getEnergyChart();
-  if (!data) return;
-  const { dataBody } = data;
-  source.value = createChartSource(dataBody);
-  console.log("接口上岛咖啡", data);
-  // source.value = res.data;
+  try {
+    const { data } = await getEnergyChart();
+    if (!data) return;
+    const { dataBody } = data;
+    source.value = createChartSource(dataBody);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 const summary = ref<Summary>({
@@ -83,9 +84,12 @@ const summary = ref<Summary>({
   carbonEmission: 0,
 });
 async function initSummary() {
-  const { data } = await getEnergySummary();
-  console.log("综合能耗概要", data);
-  summary.value = data;
+  try {
+    const { data } = await getEnergySummary();
+    summary.value = data;
+  } catch (error) {
+    console.error(error);
+  }
 }
 function init() {
   if (!settting.activeFloorId) return;
@@ -119,13 +123,6 @@ const series = computed<LineSeriesOption[]>(() => {
       };
     });
 });
-const data = {
-  title: "用电量统计",
-  total: 1038,
-  unit: "kw/h",
-  YOY: +0.035,
-  QOQ: -0.023,
-};
 </script>
 
 <style lang="scss" scoped>

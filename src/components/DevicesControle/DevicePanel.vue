@@ -118,11 +118,15 @@ const counts = ref<{ name: string; value: number }[]>([
 ]);
 async function initCounts() {
   if (!setting.activeFloorId) return;
-  const { data } = await getDeviceOnlineCount(
-    props.name!,
-    setting.activeFloorId
-  );
-  counts.value = data;
+  try {
+    const { data } = await getDeviceOnlineCount(
+      props.name!,
+      setting.activeFloorId
+    );
+    counts.value = data;
+  } catch (error) {
+    console.error(error);
+  }
 }
 watch(() => setting.activeFloorId, initCounts);
 const { resume } = useTimeoutPoll(initCounts, 10000);
@@ -137,7 +141,9 @@ async function onConfirm() {
       open
     );
     window.$message?.success(msg);
-    initCounts();
+    await initCounts();
+  } catch (error) {
+    console.error(error);
   } finally {
     showConfirm.value = false;
   }

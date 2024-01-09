@@ -18,7 +18,6 @@ export function createChartSource(
       : [item.name, item.value]
   );
   let source = [[xName || title, ...xAxis], ...items];
-  console.log("进到这里来", xName, yName);
   //   if (!xAxis.length) {
   //     const names = reverse
   //       ? dataList.map((item) => item.name).reverse()

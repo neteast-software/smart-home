@@ -104,7 +104,6 @@ const defaultTooltip = computed<TooltipComponentOption>(() => {
 
 const option = computed<ECOption>(() => {
   const { xAxisName, yAxisName, xAxis, yAxis, source, series, color } = props;
-  console.log("computed option", source);
 
   if (source.length < 1) return {};
   const finalSeries = series

@@ -1,12 +1,7 @@
 <template>
   <div class="wrap">
     <div class="energy-container">
-      <EnergyCard
-        :energyList="data"
-        title="用电量统计"
-        unit="kw/h"
-        v-bind="summary"
-      ></EnergyCard>
+      <EnergyCard title="用电量统计" unit="kw/h" v-bind="summary"></EnergyCard>
     </div>
     <div class="lineChart">
       <LineChart
@@ -61,16 +56,19 @@ const timeTypeList = [
 const activeTimeType = ref<"1" | "3">(timeTypeList[0].value);
 
 async function initChart() {
-  if (!setting.activeFloorId) return;
-  const { data } = await getWaterElectricityChart(
-    activeTimeType.value,
-    "29",
-    setting.activeFloorId
-  );
-  if (!data) return;
-  const { dataBody } = data;
-  source.value = createChartSource(dataBody);
-  console.log("接口上岛咖啡", source.value);
+  try {
+    if (!setting.activeFloorId) return;
+    const { data } = await getWaterElectricityChart(
+      activeTimeType.value,
+      "29",
+      setting.activeFloorId
+    );
+    if (!data) return;
+    const { dataBody } = data;
+    source.value = createChartSource(dataBody);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 const summary = ref<Summary>({
@@ -79,12 +77,16 @@ const summary = ref<Summary>({
   mom: 0,
 });
 async function initSummary() {
-  const { data } = await getWaterElectricitySummary(
-    activeTimeType.value,
-    "29",
-    setting.activeFloorId
-  );
-  summary.value = data;
+  try {
+    const { data } = await getWaterElectricitySummary(
+      activeTimeType.value,
+      "29",
+      setting.activeFloorId
+    );
+    summary.value = data;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function init() {
@@ -120,14 +122,6 @@ const series = computed<LineSeriesOption[]>(() => {
       };
     });
 });
-
-const data = {
-  title: "用电量统计",
-  total: 1038,
-  unit: "kw/h",
-  YOY: +0.035,
-  QOQ: -0.023,
-};
 </script>
 
 <style lang="scss" scoped>

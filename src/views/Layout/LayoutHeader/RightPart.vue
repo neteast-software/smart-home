@@ -11,10 +11,14 @@ const areaOptions = [
 const humidity = ref(0);
 const temperature = ref(0);
 async function init() {
-  const { data } = await getTemperatureHumidity(1);
-  if (!data) return;
-  humidity.value = data.humidity;
-  temperature.value = data.temperature;
+  try {
+    const { data } = await getTemperatureHumidity(1);
+    if (!data) return;
+    humidity.value = data.humidity;
+    temperature.value = data.temperature;
+  } catch (error) {
+    console.error(error);
+  }
 }
 const { resume } = useTimeoutPoll(init, 10000);
 onMounted(resume);

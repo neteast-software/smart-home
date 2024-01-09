@@ -62,7 +62,6 @@ async function login() {
   loading.value = true;
   try {
     const { data } = await loginApi(account.username, account.password);
-    console.log("登录下来");
     const { access_token } = data;
     storage.set("access_token", access_token);
     loginDialog.hide();

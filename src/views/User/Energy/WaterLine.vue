@@ -56,18 +56,18 @@ const timeTypeList = [
 const activeTimeType = ref<"1" | "3">(timeTypeList[0].value);
 
 async function initChart() {
-  const { data } = await getWaterElectricityChart(
-    activeTimeType.value,
-    "30",
-    setting.activeFloorId
-  );
-  if (!data) return;
-  const { dataBody } = data;
-  // if (!dataBody) {
-  //   source.value = [];
-  //   return;
-  // }
-  source.value = createChartSource(dataBody);
+  try {
+    const { data } = await getWaterElectricityChart(
+      activeTimeType.value,
+      "30",
+      setting.activeFloorId
+    );
+    if (!data) return;
+    const { dataBody } = data;
+    source.value = createChartSource(dataBody);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 const summary = ref<Summary>({
@@ -76,14 +76,19 @@ const summary = ref<Summary>({
   mom: 0,
 });
 async function initSummary() {
-  const { data } = await getWaterElectricitySummary(
-    activeTimeType.value,
-    "30",
-    setting.activeFloorId
-  );
-  summary.value = data;
+  try {
+    const { data } = await getWaterElectricitySummary(
+      activeTimeType.value,
+      "30",
+      setting.activeFloorId
+    );
+    summary.value = data;
+  } catch (error) {
+    console.error(error);
+  }
 }
 function init() {
+  if (!setting.activeFloorId) return;
   initChart();
   initSummary();
 }
@@ -114,13 +119,6 @@ const series = computed<LineSeriesOption[]>(() => {
       };
     });
 });
-const data = {
-  title: "用电量统计",
-  total: 1038,
-  unit: "kw/h",
-  YOY: +0.035,
-  QOQ: -0.023,
-};
 </script>
 
 <style lang="scss" scoped>

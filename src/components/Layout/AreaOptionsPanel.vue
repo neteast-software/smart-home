@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import MonitorGallery from "@/components/Monitor/MonitorGallery.vue";
 import { getAreaTree } from "@/api";
 import type { AreaTreeNode } from "@/api/type";
 import { onMounted, ref } from "vue";
@@ -19,31 +18,34 @@ const emit = defineEmits<{
 const setting = useSettingStore();
 const areaTree = ref<AreaTreeNode[]>([]);
 async function initData() {
-  const { data } = await getAreaTree();
-  if (data && data.length == 1 && data[0].childrenList?.length) {
-    areaTree.value = data[0].childrenList;
-    // const firstArea = data[0].childrenList[0];
-    // if (!firstArea) return;
-    // const firstFloor = firstArea.childrenList?.[0];
-    // if (firstFloor)
-    //   pickFloor(
-    //     firstFloor.regionIndexCode,
-    //     firstFloor.regionName,
-    //     firstArea.regionName
-    //   );
-    const pickArea = data[0].childrenList[1];
-    if (pickArea) {
-      const pickerFloor = pickArea.childrenList?.find(
-        (item) => item.regionIndexCode == "71"
-      );
-      if (pickerFloor)
-        pickFloor(
-          pickerFloor.regionIndexCode,
-          pickerFloor.regionName,
-          pickArea.regionName
+  try {
+    const { data } = await getAreaTree();
+    if (data && data.length == 1 && data[0].childrenList?.length) {
+      areaTree.value = data[0].childrenList;
+      // const firstArea = data[0].childrenList[0];
+      // if (!firstArea) return;
+      // const firstFloor = firstArea.childrenList?.[0];
+      // if (firstFloor)
+      //   pickFloor(
+      //     firstFloor.regionIndexCode,
+      //     firstFloor.regionName,
+      //     firstArea.regionName
+      //   );
+      const pickArea = data[0].childrenList[1];
+      if (pickArea) {
+        const pickerFloor = pickArea.childrenList?.find(
+          (item) => item.regionIndexCode == "71"
         );
+        if (pickerFloor)
+          pickFloor(
+            pickerFloor.regionIndexCode,
+            pickerFloor.regionName,
+            pickArea.regionName
+          );
+      }
     }
-    // const pickerFoor =
+  } catch (error) {
+    console.error(error);
   }
 }
 onMounted(initData);

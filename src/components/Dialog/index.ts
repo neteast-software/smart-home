@@ -84,13 +84,11 @@ export default class Dialog {
   private render() {
     const container = unref(this.container);
     if (!container) return;
-    console.log("开始渲染dialog");
     render(unref(this.vnode), container);
   }
   private destory() {
     const container = unref(this.container);
     if (!container) return;
-    console.log("销毁dialog");
     render(null, unref(container));
   }
 }

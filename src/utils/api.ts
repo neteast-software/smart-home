@@ -35,7 +35,6 @@ api.interceptors.response.use(
   (err) => {
     // ~取消提交加载状态 及加载提示
     // store.commit('user/CANCEL_SUBMIT_LOADING')
-    console.log(err);
     switch (err.response.status) {
       case 400:
         // message.error({ content: '请求参数错误:' + err })

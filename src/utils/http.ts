@@ -211,7 +211,6 @@ class Requestor {
   private async postFetch<T extends ResponseData>(result: UseFetchReturn<T>) {
     const { data, error, response } = result;
     // result.onFetchError((res) => {
-    //     console.log('请求错', res);
     // });
     if (error.value) {
       // 处理错误
@@ -246,7 +245,6 @@ class Requestor {
           userStore.showLoginDialog();
           break;
         case 403:
-          console.log("403错误", ret);
           window.$message?.error(ret.msg);
           // window.$message?.error({
           //   content: ret.msg as string,

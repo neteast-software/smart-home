@@ -9,14 +9,22 @@
         @dblclick="pickMonitor(monitor)"
       ></HlsMonitor>
     </div> -->
-    <template v-if="sourceList.length">
+    <template v-if="loading">
+      <div
+        class="monitor-grid-container"
+        style="display: flex; justify-content: center; align-items: center"
+      >
+        <NSpin size="large" :show="loading"></NSpin>
+      </div>
+    </template>
+    <template v-else-if="sourceList.length">
       <Swiper
         class="monitor-grid-container"
         :modules="modules"
         navigation
         :threshold="30"
-        :key="groupCount"
-        style="--swiper-pagination-bottom: -45px"
+        :key="`${setting.activeFloorId || 0}-${groupCount}`"
+        style="--swiper-pagination-bottom: -40px"
         @swiper="swiper = $event"
         :pagination="{
           clickable: true,
@@ -29,7 +37,7 @@
           :class="`grid-${gridCount}`"
           style="padding: 0 4px"
           v-for="(_, groupIdx) in groupCount"
-          :key="`${groupCount}-${groupIdx}`"
+          :key="`${setting.activeFloorId || 0}-${groupCount}-${groupIdx}`"
         >
           <!-- <div
             ref="playerRefs"
@@ -57,13 +65,13 @@
         </SwiperSlide>
       </Swiper>
     </template>
+
     <template v-else>
       <div
         class="monitor-grid-container"
         style="display: flex; justify-content: center; align-items: center"
       >
-        <NSpin v-if="loading" size="large" :show="loading"></NSpin>
-        <div v-else style="position: relative">
+        <div style="position: relative">
           <img
             style="width: 300px"
             src="../../assets/images/empty.png"
@@ -113,9 +121,8 @@ import { Pagination, Navigation } from "swiper/modules";
 import { Swiper as SwiperClass } from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
-import Hammer from "hammerjs";
+// import Hammer from "hammerjs";
 import { NSpin } from "naive-ui";
-import { init } from "echarts";
 const modules = [Pagination, Navigation];
 const swiper = ref<SwiperClass>();
 const playerRefs = ref<HTMLElement[]>([]);
@@ -143,7 +150,8 @@ async function initMonitorList() {
       .filter((item) => item.list)
       .map((item) => item.list || [])
       .flat();
-    console.log("监控列表", sourceList.value);
+  } catch (err) {
+    console.error(err);
   } finally {
     loading.value = false;
   }
@@ -158,7 +166,6 @@ async function pickMonitor(idx: number) {
   //   activeMonitorIdx.value = idx;
   //   gridCount.value = 1;
   // }
-  console.log("选择监控", idx);
   gridCount.value = gridCount.value === 1 ? 6 : 1;
   const { value: swiperInst } = swiper;
   if (!swiperInst) return;
@@ -167,31 +174,29 @@ async function pickMonitor(idx: number) {
   swiperInst.slideTo(slideIdx);
 }
 
-let hammers: any[] = [];
-function initHammers() {
-  destroyHammers();
-  const { value: players } = playerRefs;
-  if (!players) return;
-  hammers = players.map((player, idx) => {
-    const hammer = new Hammer(player);
-    hammer.on("doubletap", (e) => {
-      console.log("双击", idx);
-      pickMonitor(idx);
-    });
-    return hammer;
-  });
-}
-function destroyHammers() {
-  if (!hammers) return;
-  hammers.forEach((hammer) => {
-    hammer?.destroy();
-    hammer = null;
-  });
-  hammers = [];
-}
+// let hammers: any[] = [];
+// function initHammers() {
+//   destroyHammers();
+//   const { value: players } = playerRefs;
+//   if (!players) return;
+//   hammers = players.map((player, idx) => {
+//     const hammer = new Hammer(player);
+//     hammer.on("doubletap", (e) => {
+//       pickMonitor(idx);
+//     });
+//     return hammer;
+//   });
+// }
+// function destroyHammers() {
+//   if (!hammers) return;
+//   hammers.forEach((hammer) => {
+//     hammer?.destroy();
+//     hammer = null;
+//   });
+//   hammers = [];
+// }
 // onMounted(initHammers);
 // watch(gridCount, () => {
-//   console.log("变了", playerRefs.value);
 //   initHammers();
 // });
 // onBeforeUnmount(destroyHammers);
@@ -228,6 +233,18 @@ function destroyHammers() {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
+  gap: 4px;
+  .monitor {
+    width: 100%;
+    height: 100%;
+    // height: 100% !important;
+    // object-fit: contain;
+  }
+}
+.grid-4 {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 4px;
   .monitor {
     width: 100%;
