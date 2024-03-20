@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { NSelect } from "naive-ui";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import {
   useNow,
   useDebounceFn,
@@ -44,11 +44,16 @@ function tryExit() {
 function onPickFloor(id: string, name: string) {
   areaOptions.value = [defaultAreaOption, { label: name, value: id }];
 }
+
+const logo = ref<HTMLElement>();
+// const showLogo = computed
 </script>
 <template>
   <div class="left-container">
     <!-- <img src="@images/Layout/Logo.svg" @click="tryExit" alt="Logo" /> -->
-    <img src="@images/Layout/Logo.svg" @click="tryExit" alt="Logo" />
+    <div id="logo" ref="logo">
+      <img src="@images/Layout/Logo.svg" @click="tryExit" alt="Logo" />
+    </div>
     <div class="NSelect-Container">
       <img class="select-icon" src="@images/Layout/location.svg" alt="" />
       <NSelect

@@ -1,9 +1,13 @@
 <template>
-  <div class="device-panel-container">
+  <div class="device-panel-container flex justify-center gap-x-140px">
     <DevicePanel
+      class="w-344px"
       v-for="device in devicesList"
       :key="device.name"
       v-bind="device"
+      @click="
+        $router.push({ name: 'deviceList', params: { type: device.name } })
+      "
     ></DevicePanel>
   </div>
 </template>
@@ -32,8 +36,8 @@ const props = withDefaults(defineProps<Props>(), {});
   height: 67vh;
   padding: 0 20px;
   box-sizing: border-box;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr; /* 创建四列，每列的大小相等 */
-  gap: 0 20px;
+  // display: grid;
+  // grid-template-columns: 1fr 1fr 1fr 1fr; /* 创建四列，每列的大小相等 */
+  // gap: 0 20px;
 }
 </style>

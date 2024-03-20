@@ -100,7 +100,7 @@ userStore.setLoginDialog(loginDialog);
         class="relative layout-main"
         :key="$route.name!"
       ></IonRouterOutlet>
-      <LayoutBottom class="layout-bottom" />
+      <LayoutBottom v-show="$route.meta.navBar" class="layout-bottom" />
     </div>
     <!-- </NConfigProvider> -->
   </IonPage>

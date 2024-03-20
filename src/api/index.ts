@@ -1,5 +1,11 @@
 import http from "@/utils/http";
-import type { AreaTreeNode, MonitorItem } from "./type";
+import type {
+  AreaTreeNode,
+  MonitorItem,
+  getDeviceDetailResult,
+  AirConditionerStatus,
+} from "./type";
+export * from "./type";
 
 // 登录
 export const login = async (username: string, password: string) => {
@@ -128,4 +134,39 @@ export const getDeviceTypeList = async () => {
     "/device/types"
   );
   return data.value!;
+};
+
+// 设备开关
+export const switchDevice = async (device_id: number, value: boolean) => {
+  await http.put(`/device/screen/control/feature_name/${device_id}/开关`, {
+    value,
+  });
+};
+
+// 获取控制屏管关联的设备列表
+export const getDeviceDetail = async (device_id: number) => {
+  const { data } = await http.get<{ data: getDeviceDetailResult }>(
+    `/device/screen/${device_id}/detail`
+  );
+  return data.value!;
+};
+
+// 获取设备运行参数
+export const getDeviceParam = async (id: number) => {
+  const { data } = await http.get<{ data: AirConditionerStatus }>(
+    `/device/screen/device_param/${id}`
+  );
+  return data.value!;
+};
+
+// 设备控制
+export const controlDevice = async (
+  device_id: number,
+  feature_name: string,
+  value: any
+) => {
+  await http.put(
+    `/device/screen/control/feature_name/${device_id}/${feature_name}`,
+    { value }
+  );
 };

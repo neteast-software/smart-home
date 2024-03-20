@@ -36,17 +36,17 @@ const devicesList = computed(() => [
     swich: true,
     img: new URL("@images/Devices/AirConditioner.png", import.meta.url).href,
   },
-  {
-    label: "水表",
-    name: "SmartWaterMeter",
-    img: new URL("@images/Devices/SmartWaterMeter.png", import.meta.url).href,
-  },
-  {
-    label: "电表",
-    name: "SmartElectricMeter",
-    img: new URL("@images/Devices/SmartElectricMeter.png", import.meta.url)
-      .href,
-  },
+  // {
+  //   label: "水表",
+  //   name: "SmartWaterMeter",
+  //   img: new URL("@images/Devices/SmartWaterMeter.png", import.meta.url).href,
+  // },
+  // {
+  //   label: "电表",
+  //   name: "SmartElectricMeter",
+  //   img: new URL("@images/Devices/SmartElectricMeter.png", import.meta.url)
+  //     .href,
+  // },
 ]);
 </script>
 <template>
@@ -67,11 +67,6 @@ const devicesList = computed(() => [
       <DevicePanelList :devicesList="devicesList" />
     </SwiperSlide>
   </Swiper>
-  <!-- <NCarousel class="carousel-container" draggable :slides-per-view="1">
-    <DevicePanel :devicesList="devicesList" />
-    <DevicePanel :devicesList="devicesList" />
-    <DevicePanel :devicesList="devicesList" />
-  </NCarousel> -->
 </template>
 <style lang="scss" scoped>
 @import "@/styles/globalStyles.scss";

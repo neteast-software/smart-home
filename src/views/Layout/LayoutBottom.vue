@@ -32,7 +32,9 @@ watch(
       isFirst = false;
       await resolveTimeout();
     }
+    if (!navActiveBar.value) return;
     const naActive: HTMLElement = document.querySelector(".nav-active")!;
+    if (!naActive) return;
     navActiveBar.value.style.left = naActive.offsetLeft + "px";
     // const naActive: HTMLElement = document.querySelector(".nav-active")!;
   },

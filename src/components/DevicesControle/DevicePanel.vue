@@ -3,7 +3,7 @@
     <div class="panel-decoration"></div>
     <div class="device-name">{{ label }}</div>
     <img class="device-image" :src="img" alt="" />
-    <div class="device-details">
+    <div class="device-details justify-center gap-x-12">
       <div class="details-content" v-for="item in counts" :key="item.name">
         <span class="detail-name">{{ item.name }}</span>
         <span
@@ -13,7 +13,7 @@
         >
       </div>
     </div>
-    <div class="device-btn" style="height: 40px">
+    <div class="device-btn justify-center gap-x-12" style="height: 40px">
       <template v-if="swich">
         <NButton
           color="#8596A4"
@@ -23,7 +23,7 @@
             height: 36px;
             border: 1px solid rgba(33, 47, 67, 0.3);
           "
-          @click="
+          @click.stop="
             swichText = '全关';
             showConfirm = true;
           "
@@ -37,7 +37,7 @@
             height: 36px;
             border: 1px solid rgba(33, 47, 67, 0.3);
           "
-          @click="
+          @click.stop="
             swichText = '全开';
             showConfirm = true;
           "
@@ -215,7 +215,7 @@ async function onConfirm() {
   }
   .device-details {
     display: flex;
-    justify-content: space-between;
+    // justify-content: space-between;
     align-items: center;
     width: 70%;
     margin-bottom: 10px;
@@ -247,7 +247,7 @@ async function onConfirm() {
   }
   .device-btn {
     display: flex;
-    justify-content: space-between;
+    // justify-content: space-between;
     font-size: 14px;
     width: 100%;
     .common-btn {

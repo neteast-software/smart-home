@@ -5,6 +5,11 @@ import router from "./router";
 import { IonicVue } from "@ionic/vue";
 import { createPinia } from "pinia";
 
+/* Uno CSS */
+// import '@unocss/reset/eric-meyer.css';
+import "@unocss/reset/tailwind.css";
+import "virtual:uno.css";
+
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/vue/css/core.css";
 
@@ -34,5 +39,8 @@ NavigationBar?.hide();
 const app = createApp(App).use(IonicVue).use(router).use(createPinia());
 
 router.isReady().then(() => {
+  const meta = document.createElement("meta");
+  meta.name = "naive-ui-style";
+  document.head.appendChild(meta);
   app.mount("#app");
 });
