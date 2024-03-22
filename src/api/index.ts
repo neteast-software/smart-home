@@ -151,6 +151,14 @@ export const getDeviceDetail = async (device_id: number) => {
   return data.value!;
 };
 
+// 获取区域信息屏关联的设备列表
+export const getAreaDeviceList = async (area_id: number) => {
+  const { data } = await http.get<{ data: getDeviceDetailResult }>(
+    `/device/screen/area/${area_id}/detail`
+  );
+  return data.value!;
+};
+
 // 获取设备运行参数
 export const getDeviceParam = async (id: number) => {
   const { data } = await http.get<{ data: AirConditionerStatus }>(
@@ -169,4 +177,11 @@ export const controlDevice = async (
     `/device/screen/control/feature_name/${device_id}/${feature_name}`,
     { value }
   );
+};
+
+// 根据mac地址ping
+export const ping = async (mac: string) => {
+  await http.put(`/device/screen/mac/${mac}/ping`, undefined, {
+    silent: true,
+  });
 };

@@ -31,6 +31,7 @@ export interface RequestOptions extends RequestInit {
   withoutLock?: boolean;
   isSync?: boolean;
   needAuth?: boolean;
+  silent?: boolean;
 }
 interface ResponseData {
   code?: number;
@@ -172,7 +173,7 @@ class Requestor {
       const result = await this.useRequest<T>(url, { ...options })
         [lowerMethod](payload)
         .json();
-      const p = this.postFetch<any>(result);
+      const p = this.postFetch<any>(result, options);
       return { result, p };
     };
     return { requestKey, request };
@@ -208,7 +209,10 @@ class Requestor {
     await p;
     return result;
   }
-  private async postFetch<T extends ResponseData>(result: UseFetchReturn<T>) {
+  private async postFetch<T extends ResponseData>(
+    result: UseFetchReturn<T>,
+    options?: RequestOptions
+  ) {
     const { data, error, response } = result;
     // result.onFetchError((res) => {
     // });
@@ -217,11 +221,12 @@ class Requestor {
       return Promise.reject(error.value);
     }
     // 处理响应
-    await this.onFetchResponse(response.value!, data);
+    await this.onFetchResponse(response.value!, data, options);
   }
   private async onFetchResponse<T extends ResponseData>(
     response: Response,
-    data: Ref<T | null>
+    data: Ref<T | null>,
+    options?: RequestOptions
   ) {
     const { status } = response;
     if (status === 200 || status < 300 || status === 304) {
@@ -245,7 +250,10 @@ class Requestor {
           userStore.showLoginDialog();
           break;
         case 403:
-          window.$message?.error(ret.msg);
+          console.log("403", options);
+          if (!options?.silent) {
+            window.$message?.error(ret.msg);
+          }
           // window.$message?.error({
           //   content: ret.msg as string,
           //   duration: 3000,

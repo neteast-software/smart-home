@@ -50,7 +50,10 @@ export const commonRoutes: RouteRecordRaw[] = [
         path: "/user/deviceList/:type",
         name: "deviceList",
         component: () => import("@/views/User/Control/index.vue"),
-        props: (route) => ({ type: route.params.type, id: route.query.id }),
+        props: (route) => ({
+          type: route.params.type,
+          id: Number(route.query.id),
+        }),
         meta: {
           title: "设备列表",
           icon: "",

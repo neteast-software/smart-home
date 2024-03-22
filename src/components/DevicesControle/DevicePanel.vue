@@ -130,6 +130,9 @@ async function initCounts() {
 }
 watch(() => setting.activeFloorId, initCounts);
 const { resume } = useTimeoutPoll(initCounts, 10000);
+onMounted(() => {
+  console.log("mounted");
+});
 onMounted(resume);
 
 async function onConfirm() {

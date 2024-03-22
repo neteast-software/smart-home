@@ -14,6 +14,9 @@ dependencies:
   '@capacitor/core':
     specifier: 5.5.1
     version: 5.5.1
+  '@capacitor/device':
+    specifier: ^5.0.7
+    version: 5.0.7(@capacitor/core@5.5.1)
   '@capacitor/haptics':
     specifier: 5.0.6
     version: 5.0.6(@capacitor/core@5.5.1)
@@ -1597,6 +1600,14 @@ packages:
     resolution: {integrity: sha512-VG6Iv8Q7ZAbvjodxpvjcSe0jfxUwZXnvjbi93ehuJ6eYP8U926qLSXyrT/DToZq+F6v/HyGyVgn3mrE/9jW2Tg==}
     dependencies:
       tslib: 2.6.2
+    dev: false
+
+  /@capacitor/device@5.0.7(@capacitor/core@5.5.1):
+    resolution: {integrity: sha512-sTYzGktRVK6giQCsoFtw+IGkEPGmFvIwi0pfFej5TRND1UHidkNZSpgMFBbjCYPbwsqXTcR3boYPcmxvl5iuJg==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.5.1
     dev: false
 
   /@capacitor/haptics@5.0.6(@capacitor/core@5.5.1):

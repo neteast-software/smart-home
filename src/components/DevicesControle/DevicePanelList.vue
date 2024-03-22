@@ -6,12 +6,17 @@
       :key="device.name"
       v-bind="device"
       @click="
-        $router.push({ name: 'deviceList', params: { type: device.name } })
+        $router.push({
+          name: 'deviceList',
+          params: { type: device.name },
+          query: { id: setting.activeFloorId },
+        })
       "
     ></DevicePanel>
   </div>
 </template>
 <script setup lang="ts">
+import { useSettingStore } from "@/stores/setting";
 import DevicePanel from "./DevicePanel.vue";
 interface DevicesList {
   label: string;
@@ -23,7 +28,7 @@ interface Props {
   devicesList: DevicesList[];
 }
 const props = withDefaults(defineProps<Props>(), {});
-
+const setting = useSettingStore();
 // const showConfirm = ref(false);
 // const swichText = ref("全关");
 </script>

@@ -9,6 +9,15 @@
 <script setup lang="ts">
 import { IonApp, IonRouterOutlet, IonContent, createGesture } from "@ionic/vue";
 import NaiveProvider from "./components/Provider/NaiveProvider.vue";
+import { useTimeoutPoll } from "@vueuse/core";
+import { ping } from "@/api";
+import { onMounted } from "vue";
+const { resume } = useTimeoutPoll(() => {
+  const device_id = localStorage.getItem("device_id");
+  if (!device_id) return;
+  ping(device_id);
+}, 60 * 1000);
+onMounted(resume);
 </script>
 <style>
 :root {

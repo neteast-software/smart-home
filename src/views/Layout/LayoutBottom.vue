@@ -40,9 +40,14 @@ watch(
   },
   { immediate: true }
 );
+
+const device_id = localStorage.getItem("device_id");
 </script>
 <template>
   <div class="nav-container">
+    <p class="fixed-lb text-xs origin-bottom-left text-[#fff]/50">
+      {{ device_id }}
+    </p>
     <div class="nav-decorate left-decorate">
       <div class="spline top-spline"></div>
       <div class="spline"></div>

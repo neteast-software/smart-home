@@ -33,14 +33,23 @@ import "./styles/main.scss";
 
 import { StatusBar, Animation } from "@capacitor/status-bar";
 import { NavigationBar } from "@hugotomazi/capacitor-navigation-bar";
+import { Device } from "@capacitor/device";
 StatusBar?.hide({ animation: Animation.None });
 NavigationBar?.hide();
 
 const app = createApp(App).use(IonicVue).use(router).use(createPinia());
-
-router.isReady().then(() => {
+Device.getId().then(async ({ identifier }) => {
+  console.log("Device ID:", identifier);
+  localStorage.setItem("device_id", identifier);
+  await router.isReady();
   const meta = document.createElement("meta");
   meta.name = "naive-ui-style";
   document.head.appendChild(meta);
   app.mount("#app");
 });
+// router.isReady().then(() => {
+//   const meta = document.createElement("meta");
+//   meta.name = "naive-ui-style";
+//   document.head.appendChild(meta);
+//   app.mount("#app");
+// });

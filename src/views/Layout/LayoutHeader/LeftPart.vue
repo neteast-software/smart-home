@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { NSelect } from "naive-ui";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import {
   useNow,
   useDebounceFn,
   useThrottleFn,
   useFullscreen,
+  useMutationObserver,
 } from "@vueuse/core";
 import { format } from "date-fns";
 import AreaOptionsPanel from "@/components/Layout/AreaOptionsPanel.vue";
@@ -46,13 +47,34 @@ function onPickFloor(id: string, name: string) {
 }
 
 const logo = ref<HTMLElement>();
+const showLogo = ref(true);
+useMutationObserver(
+  logo,
+  () => {
+    if (!logo.value) return;
+    showLogo.value = logo.value.children.length == 1;
+  },
+  {
+    childList: true,
+  }
+);
+// const showLogo = computed(() => {
+//   if (!logo.value) return;
+//   const childNodes = logo.value.children;
+//   return Array.from(childNodes).some((node) => node.tagName === "IMG");
+// });
 // const showLogo = computed
 </script>
 <template>
   <div class="left-container">
     <!-- <img src="@images/Layout/Logo.svg" @click="tryExit" alt="Logo" /> -->
     <div id="logo" ref="logo">
-      <img src="@images/Layout/Logo.svg" @click="tryExit" alt="Logo" />
+      <img
+        v-show="showLogo"
+        src="@images/Layout/Logo.svg"
+        @click="tryExit"
+        alt="Logo"
+      />
     </div>
     <div class="NSelect-Container">
       <img class="select-icon" src="@images/Layout/location.svg" alt="" />
