@@ -13,6 +13,7 @@ import AreaOptionsPanel from "@/components/Layout/AreaOptionsPanel.vue";
 import { App } from "@capacitor/app";
 import { useSettingStore } from "@/stores/setting";
 import storage from "@/utils/storage";
+import { useTryMany } from "@/utils/index";
 const setting = useSettingStore();
 const areaOptionsPanelRef = ref<InstanceType<typeof AreaOptionsPanel>>();
 const now = useNow();
@@ -64,6 +65,9 @@ useMutationObserver(
 //   return Array.from(childNodes).some((node) => node.tagName === "IMG");
 // });
 // const showLogo = computed
+const { trytodo } = useTryMany(() => {
+  areaOptionsPanelRef.value?.toggleOptionsPanel();
+}, 500);
 </script>
 <template>
   <div class="left-container">
@@ -83,7 +87,7 @@ useMutationObserver(
         :value="setting.activeFloorId"
         size="large"
         disabled
-        @click="areaOptionsPanelRef!.toggleOptionsPanel()"
+        @click="trytodo"
         :options="areaOptions"
       />
       <AreaOptionsPanel ref="areaOptionsPanelRef" @pick="onPickFloor" />
